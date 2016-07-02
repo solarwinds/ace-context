@@ -18,6 +18,7 @@ test("minimized test case that caused #6011 patch to fail", function (t) {
 
     process.nextTick(function () {
       t.ok(n.get('state'), "state should be visible");
+      console.log(cls.trace);
     });
   });
 });

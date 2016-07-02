@@ -28,9 +28,12 @@
   ],
   "license": "BSD-2-Clause",
   "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.5.3",
     "tap": "^5.7.1"
   },
   "dependencies": {
+    "async-hook": "^1.5.1",
     "async-listener": "^0.6.0",
     "emitter-listener": "^1.0.1"
   }

@@ -1,48 +1,61 @@
 'use strict';
 
-var assert      = require('assert');
-var wrapEmitter = require('emitter-listener');
+const assert = require('assert');
+const wrapEmitter = require('emitter-listener');
+const asyncHook = require('async-hook');
+//const AsyncContext = require('./async-context');
+
+//const asyncContext = new AsyncContext();
 
 /*
  *
  * CONSTANTS
  *
  */
-var CONTEXTS_SYMBOL = 'cls@contexts';
-var ERROR_SYMBOL = 'error@context';
+const CONTEXTS_SYMBOL = 'cls@contexts';
+const ERROR_SYMBOL = 'error@context';
 
 // load polyfill if native support is unavailable
-if (!process.addAsyncListener) require('async-listener');
+//if (!process.addAsyncListener) require('async-listener');
+
+const contexts = new Map();
+const trace = [];
+let currentUid = null;
+let currentParentUid = null;
+let currentNamespace = null;
 
 function Namespace(name) {
-  this.name   = name;
+  this.name = name;
   // changed in 2.7: no default context
   this.active = null;
-  this._set   = [];
-  this.id     = null;
+  this._set = [];
+  this.id = null;
+  this.parentId = null;
 }
 
-Namespace.prototype.set = function (key, value) {
+Namespace.prototype.set = function set(key, value) {
   if (!this.active) {
-    throw new Error("No context available. ns.run() or ns.bind() must be called first.");
+    throw new Error('No context available. ns.run() or ns.bind() must be called first.');
   }
 
   this.active[key] = value;
   return value;
 };
 
-Namespace.prototype.get = function (key) {
-  if (!this.active) return undefined;
+Namespace.prototype.get = function get(key) {
+  if (!this.active) {
+    return undefined;
+  }
 
   return this.active[key];
 };
 
-Namespace.prototype.createContext = function () {
+Namespace.prototype.createContext = function createContext() {
   return Object.create(this.active);
 };
 
-Namespace.prototype.run = function (fn) {
-  var context = this.createContext();
+Namespace.prototype.run = function run(fn) {
+  let context = this.createContext();
   this.enter(context);
   try {
     fn(context);
@@ -59,7 +72,7 @@ Namespace.prototype.run = function (fn) {
   }
 };
 
-Namespace.prototype.bind = function (fn, context) {
+Namespace.prototype.bind = function bind(fn, context) {
   if (!context) {
     if (!this.active) {
       context = Object.create(this.active);
@@ -69,8 +82,8 @@ Namespace.prototype.bind = function (fn, context) {
     }
   }
 
-  var self = this;
-  return function () {
+  let self = this;
+  return function() {
     self.enter(context);
     try {
       return fn.apply(this, arguments);
@@ -87,57 +100,63 @@ Namespace.prototype.bind = function (fn, context) {
   };
 };
 
-Namespace.prototype.enter = function (context) {
-  assert.ok(context, "context must be provided for entering");
+Namespace.prototype.enter = function enter(context) {
+  assert.ok(context, 'context must be provided for entering');
 
   this._set.push(this.active);
   this.active = context;
 };
 
-Namespace.prototype.exit = function (context) {
-  assert.ok(context, "context must be provided for exiting");
+Namespace.prototype.exit = function exit(context) {
+  assert.ok(context, 'context must be provided for exiting');
 
   // Fast path for most exits that are at the top of the stack
   if (this.active === context) {
-    assert.ok(this._set.length, "can't remove top context");
+    assert.ok(this._set.length, 'can\'t remove top context');
     this.active = this._set.pop();
     return;
   }
 
   // Fast search in the stack using lastIndexOf
-  var index = this._set.lastIndexOf(context);
+  let index = this._set.lastIndexOf(context);
 
-  assert.ok(index >= 0, "context not currently entered; can't exit");
-  assert.ok(index,      "can't remove top context");
+  assert.ok(index >= 0, 'context not currently entered; can\'t exit');
+  assert.ok(index, 'can\'t remove top context');
 
   this._set.splice(index, 1);
 };
 
-Namespace.prototype.bindEmitter = function (emitter) {
-  assert.ok(emitter.on && emitter.addListener && emitter.emit, "can only bind real EEs");
+Namespace.prototype.bindEmitter = function bindEmitter(emitter) {
+  assert.ok(emitter.on && emitter.addListener && emitter.emit, 'can only bind real EEs');
 
-  var namespace  = this;
-  var thisSymbol = 'context@' + this.name;
+  let namespace = this;
+  let thisSymbol = 'context@' + this.name;
 
   // Capture the context active at the time the emitter is bound.
   function attach(listener) {
-    if (!listener) return;
-    if (!listener[CONTEXTS_SYMBOL]) listener[CONTEXTS_SYMBOL] = Object.create(null);
+    if (!listener) {
+      return;
+    }
+    if (!listener[CONTEXTS_SYMBOL]) {
+      listener[CONTEXTS_SYMBOL] = Object.create(null);
+    }
 
     listener[CONTEXTS_SYMBOL][thisSymbol] = {
-      namespace : namespace,
-      context   : namespace.active
+      namespace: namespace,
+      context: namespace.active
     };
   }
 
   // At emit time, bind the listener within the correct context.
   function bind(unwrapped) {
-    if (!(unwrapped && unwrapped[CONTEXTS_SYMBOL])) return unwrapped;
+    if (!(unwrapped && unwrapped[CONTEXTS_SYMBOL])) {
+      return unwrapped;
+    }
 
-    var wrapped  = unwrapped;
-    var contexts = unwrapped[CONTEXTS_SYMBOL];
-    Object.keys(contexts).forEach(function (name) {
-      var thunk = contexts[name];
+    let wrapped = unwrapped;
+    let contexts = unwrapped[CONTEXTS_SYMBOL];
+    Object.keys(contexts).forEach(function(name) {
+      let thunk = contexts[name];
       wrapped = thunk.namespace.bind(wrapped, thunk.context);
     });
     return wrapped;
@@ -152,36 +171,32 @@ Namespace.prototype.bindEmitter = function (emitter) {
  *
  * @param {Error} exception Possibly annotated error.
  */
-Namespace.prototype.fromException = function (exception) {
+Namespace.prototype.fromException = function fromException(exception) {
   return exception[ERROR_SYMBOL];
 };
 
-function get(name) {
+function getNamespace(name) {
   return process.namespaces[name];
 }
 
-function create(name) {
-  assert.ok(name, "namespace must be given a name!");
+function createNamespace(name) {
+  assert.ok(name, 'namespace must be given a name!');
 
-  var namespace = new Namespace(name);
-  namespace.id = process.addAsyncListener({
-    create : function () { return namespace.active; },
-    before : function (context, storage) { if (storage) namespace.enter(storage); },
-    after  : function (context, storage) { if (storage) namespace.exit(storage); },
-    error  : function (storage) { if (storage) namespace.exit(storage); }
-  });
+  let namespace = new Namespace(name);
+  namespace.id = currentUid;
+  namespace.parentId = currentParentUid;
+  contexts.set(currentUid, namespace);
 
   process.namespaces[name] = namespace;
   return namespace;
 }
 
-function destroy(name) {
-  var namespace = get(name);
+function destroyNamespace(name) {
+  let namespace = getNamespace(name);
 
-  assert.ok(namespace,    "can't delete nonexistent namespace!");
-  assert.ok(namespace.id, "don't assign to process.namespaces directly!");
+  assert.ok(namespace, 'can\'t delete nonexistent namespace!');
+  assert.ok(namespace.id, 'don\'t assign to process.namespaces directly!');
 
-  process.removeAsyncListener(namespace.id);
   process.namespaces[name] = null;
 }
 
@@ -189,16 +204,63 @@ function reset() {
   // must unregister async listeners
   if (process.namespaces) {
     Object.keys(process.namespaces).forEach(function (name) {
-      destroy(name);
+      destroyNamespace(name);
     });
   }
   process.namespaces = Object.create(null);
 }
-if (!process.namespaces) reset(); // call immediately to set up
+
+process.namespaces = {};
+
+asyncHook.addHooks({
+  init(uid, handle, provider, parentUid, parentHandle) {
+    trace.push('init uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
+    currentUid = uid;
+    currentParentUid = parentUid;
+    contexts.set(uid, currentNamespace);
+    currentNamespace = contexts.get(uid);
+    if (currentNamespace && currentNamespace.active){
+      currentNamespace.enter(currentNamespace.active);
+    }
+  },
+  pre(uid, handle) {
+    trace.push('pre uid:' + uid);
+    currentUid = uid;
+    currentParentUid = null;
+
+    currentNamespace = contexts.get(uid);
+    if (currentNamespace && currentNamespace.active){
+      currentNamespace.enter(currentNamespace.active);
+    }
+  },
+  post(uid, handle) {
+    trace.push('post uid:' + uid);
+    currentUid = uid;
+    currentParentUid = null;
+
+    currentNamespace = contexts.get(uid);
+    if (currentNamespace && currentNamespace.active){
+      currentNamespace.exit(currentNamespace.active);
+    }
+  },
+  destroy(uid) {
+    trace.push('destroy uid:' + uid);
+    currentUid = uid;
+    currentParentUid = null;
+    currentNamespace = contexts.get(uid);
+    contexts.delete(uid);
+  }
+});
+
+if (asyncHook._state && !asyncHook._state.enabled) {
+  asyncHook.enable();
+}
+
 
 module.exports = {
-  getNamespace     : get,
-  createNamespace  : create,
-  destroyNamespace : destroy,
-  reset            : reset
+  getNamespace: getNamespace,
+  createNamespace: createNamespace,
+  destroyNamespace: destroyNamespace,
+  reset: reset,
+  trace: trace
 };
