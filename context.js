@@ -182,7 +182,37 @@ function createNamespace(name) {
   let namespace = new Namespace(name);
   namespace.id = currentUid;
   namespace.parentId = currentParentUid;
-  contexts.set(currentUid, namespace);
+  //contexts.set(currentUid, namespace);
+
+  asyncHook.addHooks({
+    init(uid, handle, provider, parentUid, parentHandle) {
+      currentUid = uid;
+      currentParentUid = parentUid;
+      contexts.set(uid, namespace.active);
+      //trace.push('init uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
+    },
+    pre(uid, handle) {
+      currentUid = uid;
+      let context = contexts.get(uid);
+      if (context) {
+        namespace.enter(context);
+      }
+      //trace.push('pre uid:' + uid);
+    },
+    post(uid, handle) {
+      currentUid = uid;
+      let context = contexts.get(uid);
+      if (context) {
+        namespace.exit(context);
+      }
+      //trace.push('post uid:' + uid);
+    },
+    destroy(uid) {
+      currentUid = uid;
+      contexts.delete(uid);
+      //trace.push('destroy uid:' + uid);
+    }
+  });
 
   process.namespaces[name] = namespace;
   return namespace;
