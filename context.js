@@ -3,9 +3,6 @@
 const assert = require('assert');
 const wrapEmitter = require('emitter-listener');
 const asyncHook = require('async-hook');
-//const AsyncContext = require('./async-context');
-
-//const asyncContext = new AsyncContext();
 
 /*
  *
@@ -212,50 +209,64 @@ function reset() {
 
 process.namespaces = {};
 
-asyncHook.addHooks({
-  init(uid, handle, provider, parentUid, parentHandle) {
-    trace.push('init uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
-    currentUid = uid;
-    currentParentUid = parentUid;
-    contexts.set(uid, currentNamespace);
-    currentNamespace = contexts.get(uid);
-    if (currentNamespace && currentNamespace.active){
-      currentNamespace.enter(currentNamespace.active);
-    }
-  },
-  pre(uid, handle) {
-    trace.push('pre uid:' + uid);
-    currentUid = uid;
-    currentParentUid = null;
+function setupAsyncHooks() {
 
-    currentNamespace = contexts.get(uid);
-    if (currentNamespace && currentNamespace.active){
-      currentNamespace.enter(currentNamespace.active);
-    }
-  },
-  post(uid, handle) {
-    trace.push('post uid:' + uid);
-    currentUid = uid;
-    currentParentUid = null;
+  asyncHook.addHooks({
+    init(uid, handle, provider, parentUid, parentHandle) {
+      //let name = currentNamespace ? currentNamespace.name : '';
+      //trace.push('init uid:' + uid + ' parent:' + parentUid + ' provider:' + provider + ' ns:' + name);
+      currentUid = uid;
+      currentParentUid = parentUid;
+      currentNamespace = contexts.get(uid);
 
-    currentNamespace = contexts.get(uid);
-    if (currentNamespace && currentNamespace.active){
-      currentNamespace.exit(currentNamespace.active);
+      if (currentNamespace && currentNamespace.active) {
+        //trace.push('entering:' + currentNamespace.name + ' set:' + currentNamespace._set.length);
+        currentNamespace.enter(currentNamespace.active);
+      }
+    },
+    pre(uid, handle) {
+      //let name = currentNamespace ? currentNamespace.name : '';
+      //trace.push('pre uid:' + uid + ' ns:' + name);
+      currentUid = uid;
+      currentParentUid = null;
+
+      currentNamespace = contexts.get(uid);
+      if (currentNamespace && currentNamespace.active) {
+        //trace.push('entering:' + currentNamespace.name + ' set:' + currentNamespace._set.length);
+        currentNamespace.enter(currentNamespace.active);
+      }
+    },
+    post(uid, handle) {
+      //let name = currentNamespace ? currentNamespace.name : '';
+      //trace.push('post uid:' + uid + ' ns:' + name);
+      currentUid = uid;
+      currentParentUid = null;
+
+      currentNamespace = contexts.get(uid);
+      if (currentNamespace && currentNamespace.active) {
+        //trace.push('exiting:' + currentNamespace.name + ' set:' + currentNamespace._set.length);
+        currentNamespace.exit(currentNamespace.active);
+      }
+    },
+    destroy(uid) {
+      //let name = currentNamespace ? currentNamespace.name : '';
+      //trace.push('destroy uid:' + uid + ' ns:' + name);
+      currentUid = uid;
+      currentParentUid = null;
+      currentNamespace = contexts.get(uid);
+      contexts.delete(uid);
     }
-  },
-  destroy(uid) {
-    trace.push('destroy uid:' + uid);
-    currentUid = uid;
-    currentParentUid = null;
-    currentNamespace = contexts.get(uid);
-    contexts.delete(uid);
-  }
-});
+  });
+
+}
+
+if ( 1 === 2 ){
+  setupAsyncHooks();
+}
 
 if (asyncHook._state && !asyncHook._state.enabled) {
   asyncHook.enable();
 }
-
 
 module.exports = {
   getNamespace: getNamespace,
