@@ -1,5 +1,6 @@
 'use strict';
 
+const util = require('util');
 const assert = require('assert');
 const wrapEmitter = require('emitter-listener');
 const asyncHook = require('async-hook');
@@ -19,7 +20,13 @@ const contexts = new Map();
 const trace = [];
 let currentUid = null;
 let currentParentUid = null;
-let currentNamespace = null;
+//let currentNamespace = null;
+
+const invertedProviders = [];
+for (let key in asyncHook.providers){
+  invertedProviders[asyncHook.providers[key]] = key;
+}
+
 
 function Namespace(name) {
   this.name = name;
@@ -48,7 +55,9 @@ Namespace.prototype.get = function get(key) {
 };
 
 Namespace.prototype.createContext = function createContext() {
-  return Object.create(this.active);
+  let context = Object.create(this.active);
+  context.NS_NAME = this.name;
+  return context;
 };
 
 Namespace.prototype.run = function run(fn) {
@@ -117,7 +126,14 @@ Namespace.prototype.exit = function exit(context) {
   // Fast search in the stack using lastIndexOf
   let index = this._set.lastIndexOf(context);
 
-  assert.ok(index >= 0, 'context not currently entered; can\'t exit');
+  if (index < 0) {
+    let len = trace.length;
+    for (let i = 0; i < len; i++) {
+      console.log(trace[i]);
+    }
+  }
+
+  assert.ok(index >= 0, 'context not currently entered; can\'t exit. \n' + util.inspect(this) + '\n' + util.inspect(context));
   assert.ok(index, 'can\'t remove top context');
 
   this._set.splice(index, 1);
@@ -182,35 +198,39 @@ function createNamespace(name) {
   let namespace = new Namespace(name);
   namespace.id = currentUid;
   namespace.parentId = currentParentUid;
-  //contexts.set(currentUid, namespace);
 
   asyncHook.addHooks({
     init(uid, handle, provider, parentUid, parentHandle) {
       currentUid = uid;
       currentParentUid = parentUid;
       contexts.set(uid, namespace.active);
-      //trace.push('init uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
+      trace.push('init ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + invertedProviders[provider]);
+      //trace.push('init args: ' + util.inspect(arguments));
+      if (parentHandle){
+        trace.push('PARENTID: ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
+      }
+
     },
-    pre(uid, handle) {
+    pre(uid, entryPoint) {
       currentUid = uid;
       let context = contexts.get(uid);
       if (context) {
         namespace.enter(context);
       }
-      //trace.push('pre uid:' + uid);
+      trace.push('pre ' + name + ' uid:' + uid + ' entryPoint:' + util.inspect(entryPoint));
     },
-    post(uid, handle) {
+    post(uid, didThrow) {
       currentUid = uid;
       let context = contexts.get(uid);
       if (context) {
         namespace.exit(context);
       }
-      //trace.push('post uid:' + uid);
+      trace.push('post ' + name + ' uid:' + uid + ' didThrow:' + util.inspect(didThrow));
     },
     destroy(uid) {
       currentUid = uid;
       contexts.delete(uid);
-      //trace.push('destroy uid:' + uid);
+      trace.push('destroy ' + name + ' uid:' + uid);
     }
   });
 
@@ -222,7 +242,7 @@ function destroyNamespace(name) {
   let namespace = getNamespace(name);
 
   assert.ok(namespace, 'can\'t delete nonexistent namespace!');
-  assert.ok(namespace.id, 'don\'t assign to process.namespaces directly!');
+  assert.ok(namespace.id, 'don\'t assign to process.namespaces directly! ' + util.inspect(namespace));
 
   process.namespaces[name] = null;
 }
@@ -230,7 +250,7 @@ function destroyNamespace(name) {
 function reset() {
   // must unregister async listeners
   if (process.namespaces) {
-    Object.keys(process.namespaces).forEach(function (name) {
+    Object.keys(process.namespaces).forEach(function(name) {
       destroyNamespace(name);
     });
   }
@@ -239,7 +259,10 @@ function reset() {
 
 process.namespaces = {};
 
-function setupAsyncHooks() {
+/**
+ * Really only used to set currentUid used during new Namespace() creation.
+ */
+function setupGlobalAsyncHooks() {
 
   asyncHook.addHooks({
     init(uid, handle, provider, parentUid, parentHandle) {
@@ -247,51 +270,51 @@ function setupAsyncHooks() {
       //trace.push('init uid:' + uid + ' parent:' + parentUid + ' provider:' + provider + ' ns:' + name);
       currentUid = uid;
       currentParentUid = parentUid;
-      currentNamespace = contexts.get(uid);
+      //currentNamespace = contexts.get(uid);
 
-      if (currentNamespace && currentNamespace.active) {
-        //trace.push('entering:' + currentNamespace.name + ' set:' + currentNamespace._set.length);
-        currentNamespace.enter(currentNamespace.active);
-      }
+      /*if (currentNamespace && currentNamespace.active) {
+       //trace.push('entering:' + currentNamespace.name + ' set:' + currentNamespace._set.length);
+       currentNamespace.enter(currentNamespace.active);
+       }*/
     },
-    pre(uid, handle) {
+    pre(uid, entryPoint) {
       //let name = currentNamespace ? currentNamespace.name : '';
       //trace.push('pre uid:' + uid + ' ns:' + name);
       currentUid = uid;
       currentParentUid = null;
 
-      currentNamespace = contexts.get(uid);
-      if (currentNamespace && currentNamespace.active) {
-        //trace.push('entering:' + currentNamespace.name + ' set:' + currentNamespace._set.length);
-        currentNamespace.enter(currentNamespace.active);
-      }
+      /*currentNamespace = contexts.get(uid);
+       if (currentNamespace && currentNamespace.active) {
+       //trace.push('entering:' + currentNamespace.name + ' set:' + currentNamespace._set.length);
+       currentNamespace.enter(currentNamespace.active);
+       }*/
     },
-    post(uid, handle) {
+    post(uid, didThrow) {
       //let name = currentNamespace ? currentNamespace.name : '';
       //trace.push('post uid:' + uid + ' ns:' + name);
       currentUid = uid;
       currentParentUid = null;
 
-      currentNamespace = contexts.get(uid);
-      if (currentNamespace && currentNamespace.active) {
-        //trace.push('exiting:' + currentNamespace.name + ' set:' + currentNamespace._set.length);
-        currentNamespace.exit(currentNamespace.active);
-      }
+      /*currentNamespace = contexts.get(uid);
+       if (currentNamespace && currentNamespace.active) {
+       //trace.push('exiting:' + currentNamespace.name + ' set:' + currentNamespace._set.length);
+       currentNamespace.exit(currentNamespace.active);
+       }*/
     },
     destroy(uid) {
       //let name = currentNamespace ? currentNamespace.name : '';
       //trace.push('destroy uid:' + uid + ' ns:' + name);
       currentUid = uid;
       currentParentUid = null;
-      currentNamespace = contexts.get(uid);
-      contexts.delete(uid);
+      //currentNamespace = contexts.get(uid);
+      //contexts.delete(uid);
     }
   });
 
 }
 
-if ( 1 === 2 ){
-  setupAsyncHooks();
+if (1 === 1) {
+  setupGlobalAsyncHooks();
 }
 
 if (asyncHook._state && !asyncHook._state.enabled) {
@@ -305,3 +328,10 @@ module.exports = {
   reset: reset,
   trace: trace
 };
+
+
+// Add back to callstack
+var stackChain = require('stack-chain');
+if (stackChain.filter._modifiers && stackChain.filter._modifiers.length) {
+  stackChain.filter.deattach(stackChain.filter._modifiers[0]);
+}
