@@ -34,7 +34,6 @@ function Namespace(name) {
   this.active = null;
   this._set = [];
   this.id = null;
-  this.parentId = null;
 }
 
 Namespace.prototype.set = function set(key, value) {
@@ -201,9 +200,8 @@ function createNamespace(name) {
 
   asyncHook.addHooks({
     init(uid, handle, provider, parentUid, parentHandle) {
-      currentUid = uid;
-      currentParentUid = parentUid;
-      contexts.set(uid, namespace.active);
+      currentUid = parentUid || uid;
+      contexts.set(currentUid, namespace.active);
       trace.push('init ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + invertedProviders[provider]);
       //trace.push('init args: ' + util.inspect(arguments));
       if (parentHandle){
@@ -268,8 +266,7 @@ function setupGlobalAsyncHooks() {
     init(uid, handle, provider, parentUid, parentHandle) {
       //let name = currentNamespace ? currentNamespace.name : '';
       //trace.push('init uid:' + uid + ' parent:' + parentUid + ' provider:' + provider + ' ns:' + name);
-      currentUid = uid;
-      currentParentUid = parentUid;
+      currentUid = parentUid || uid;;
       //currentNamespace = contexts.get(uid);
 
       /*if (currentNamespace && currentNamespace.active) {
@@ -281,7 +278,6 @@ function setupGlobalAsyncHooks() {
       //let name = currentNamespace ? currentNamespace.name : '';
       //trace.push('pre uid:' + uid + ' ns:' + name);
       currentUid = uid;
-      currentParentUid = null;
 
       /*currentNamespace = contexts.get(uid);
        if (currentNamespace && currentNamespace.active) {
@@ -293,7 +289,6 @@ function setupGlobalAsyncHooks() {
       //let name = currentNamespace ? currentNamespace.name : '';
       //trace.push('post uid:' + uid + ' ns:' + name);
       currentUid = uid;
-      currentParentUid = null;
 
       /*currentNamespace = contexts.get(uid);
        if (currentNamespace && currentNamespace.active) {
@@ -305,7 +300,6 @@ function setupGlobalAsyncHooks() {
       //let name = currentNamespace ? currentNamespace.name : '';
       //trace.push('destroy uid:' + uid + ' ns:' + name);
       currentUid = uid;
-      currentParentUid = null;
       //currentNamespace = contexts.get(uid);
       //contexts.delete(uid);
     }
