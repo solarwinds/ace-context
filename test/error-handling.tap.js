@@ -88,7 +88,7 @@ test("throw in process.nextTick attaches the context", function (t) {
   var namespace = cls.createNamespace('cls@nexttick');
 
   var d = domain.create();
-  d.on('error', function (e) {
+  d.once('error', function (e) {
     t.ok(namespace.fromException(e), "context was attached to error");
     t.equal(namespace.fromException(e)['value'], 'transaction set',
             "found the inner value");
@@ -117,7 +117,7 @@ test("throw in setTimeout attaches the context", function (t) {
   var namespace = cls.createNamespace('cls@nexttick');
   var d = domain.create();
 
-  d.on('error', function (e) {
+  d.once('error', function (e) {
     t.ok(namespace.fromException(e), "context was attached to error");
     t.equal(namespace.fromException(e)['value'], 'transaction set',
             "found the inner value");
