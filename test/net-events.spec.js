@@ -38,10 +38,10 @@ describe('continuation-local state with net connection', () => {
             testValue2 = namespace.get('test');
             server.close();
             socket.end('GoodBye');
-          });
 
-          serverDone = true;
-          checkDone();
+            serverDone = true;
+            checkDone();
+          });
 
         });
 
@@ -59,10 +59,10 @@ describe('continuation-local state with net connection', () => {
                 //t.equal(namespace.get('test'), 'MONKEY', 'state preserved for client data');
                 //t.end();
                 testValue4 = namespace.get('test');
-              });
 
-              clientDone = true;
-              checkDone();
+                clientDone = true;
+                checkDone();
+              });
 
             });
           });

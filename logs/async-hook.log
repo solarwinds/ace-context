@@ -1,0 +1,321 @@
+./test/net-events.tap.js creating Context in ns:net active:null
+created Context in ns:net context:{ _ns_name: 'net' }
+ENTER net uid:-1 context: { _ns_name: 'net' }
+before run: { _ns_name: 'net' }
+setting key:test=originalValue in ns:net uid:-1 active:{ _ns_name: 'net' }
+creating Context in ns:net active:{ _ns_name: 'net', test: 'originalValue' }
+created Context in ns:net context:{ _ns_name: 'net' }
+ENTER net uid:-1 context: { _ns_name: 'net' }
+before run: { _ns_name: 'net' }
+setting key:test=newContextValue in ns:net uid:-1 active:{ _ns_name: 'net' }
+INIT net uid:22 parent:null provider:TCPWRAP active:{ _ns_name: 'net', test: 'newContextValue' }
+INIT net uid:-7 parent:null provider:NONE active:{ _ns_name: 'net', test: 'newContextValue' }
+after run: { _ns_name: 'net', test: 'newContextValue' }
+EXIT net uid:-7 context: { _ns_name: 'net', test: 'newContextValue' }
+after run: { _ns_name: 'net', test: 'originalValue' }
+EXIT net uid:-7 context: { _ns_name: 'net', test: 'originalValue' }
+PRE MISSING CONTEXT net uid:-1 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-1 handle:NextTickWrap
+DESTROY net uid:-1 context:undefined active:null
+PRE MISSING CONTEXT net uid:-2 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-2 handle:NextTickWrap
+DESTROY net uid:-2 context:undefined active:null
+PRE MISSING CONTEXT net uid:-3 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-3 handle:NextTickWrap
+DESTROY net uid:-3 context:undefined active:null
+PRE MISSING CONTEXT net uid:-4 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-4 handle:NextTickWrap
+DESTROY net uid:-4 context:undefined active:null
+PRE MISSING CONTEXT net uid:-5 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-5 handle:NextTickWrap
+DESTROY net uid:-5 context:undefined active:null
+PRE MISSING CONTEXT net uid:-6 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-6 handle:NextTickWrap
+DESTROY net uid:-6 context:undefined active:null
+ENTER net uid:-7 context: { _ns_name: 'net', test: 'newContextValue' }
+PRE net uid:-7 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'newContextValue' }
+creating Context in ns:net active:{ _ns_name: 'net', test: 'newContextValue' }
+created Context in ns:net context:{ _ns_name: 'net' }
+ENTER net uid:-7 context: { _ns_name: 'net' }
+before run: { _ns_name: 'net' }
+setting key:test=MONKEY in ns:net uid:-7 active:{ _ns_name: 'net' }
+INIT net uid:23 parent:null provider:TCPWRAP active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:24 parent:null provider:GETADDRINFOREQWRAP active:{ _ns_name: 'net', test: 'MONKEY' }
+after run: { _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:24 context: { _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-7 context: { _ns_name: 'net', test: 'newContextValue' }
+POST net uid:-7 handle:NextTickWrap context:{ _ns_name: 'net', test: 'newContextValue' }
+DESTROY net uid:-7 context:undefined active:null
+ENTER net uid:24 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:24 entryPoint:GetAddrInfoReqWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:25 parent:null provider:TCPCONNECTWRAP active:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:24 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:24 handle:GetAddrInfoReqWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:24 context:undefined active:null
+INIT net uid:26 parent:22 provider:TCPWRAP active:null
+PARENTID: net uid:26 parent:22 provider:15
+ENTER net uid:22 context: { _ns_name: 'net', test: 'newContextValue' }
+PRE net uid:22 entryPoint:TCP context:{ _ns_name: 'net', test: 'newContextValue' }
+getting key:test=newContextValue in ns:net uid:22 active:{ _ns_name: 'net', test: 'newContextValue' }
+INIT net uid:-8 parent:null provider:NONE active:{ _ns_name: 'net', test: 'newContextValue' }
+INIT net uid:-9 parent:null provider:NONE active:{ _ns_name: 'net', test: 'newContextValue' }
+INIT net uid:-10 parent:null provider:NONE active:{ _ns_name: 'net', test: 'newContextValue' }
+INIT net uid:-11 parent:null provider:NONE active:{ _ns_name: 'net', test: 'newContextValue' }
+EXIT net uid:22 context: { _ns_name: 'net', test: 'newContextValue' }
+POST net uid:22 handle:TCP context:{ _ns_name: 'net', test: 'newContextValue' }
+ENTER net uid:-8 context: { _ns_name: 'net', test: 'newContextValue' }
+PRE net uid:-8 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'newContextValue' }
+EXIT net uid:-8 context: { _ns_name: 'net', test: 'newContextValue' }
+POST net uid:-8 handle:NextTickWrap context:{ _ns_name: 'net', test: 'newContextValue' }
+DESTROY net uid:-8 context:undefined active:null
+ENTER net uid:-9 context: { _ns_name: 'net', test: 'newContextValue' }
+PRE net uid:-9 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'newContextValue' }
+EXIT net uid:-9 context: { _ns_name: 'net', test: 'newContextValue' }
+POST net uid:-9 handle:NextTickWrap context:{ _ns_name: 'net', test: 'newContextValue' }
+DESTROY net uid:-9 context:undefined active:null
+ENTER net uid:-10 context: { _ns_name: 'net', test: 'newContextValue' }
+PRE net uid:-10 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'newContextValue' }
+EXIT net uid:-10 context: { _ns_name: 'net', test: 'newContextValue' }
+POST net uid:-10 handle:NextTickWrap context:{ _ns_name: 'net', test: 'newContextValue' }
+DESTROY net uid:-10 context:undefined active:null
+ENTER net uid:-11 context: { _ns_name: 'net', test: 'newContextValue' }
+PRE net uid:-11 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'newContextValue' }
+EXIT net uid:-11 context: { _ns_name: 'net', test: 'newContextValue' }
+POST net uid:-11 handle:NextTickWrap context:{ _ns_name: 'net', test: 'newContextValue' }
+DESTROY net uid:-11 context:undefined active:null
+ENTER net uid:25 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:25 entryPoint:TCPConnectWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+getting key:test=MONKEY in ns:net uid:25 active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-12 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+.INIT net uid:-13 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-14 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-15 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-16 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:25 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:25 handle:TCPConnectWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+ENTER net uid:-12 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-12 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-12 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-12 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-12 context:undefined active:null
+ENTER net uid:-13 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-13 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-13 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-13 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-13 context:undefined active:null
+ENTER net uid:-14 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-14 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-14 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-14 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-14 context:undefined active:null
+ENTER net uid:-15 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-15 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-15 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-15 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-15 context:undefined active:null
+ENTER net uid:-16 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-16 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-16 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-16 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-16 context:undefined active:null
+DESTROY net uid:25 context:undefined active:null
+PRE MISSING CONTEXT net uid:26 handle:TCP
+getting key:test=undefined in ns:net uid:26 active:null
+INIT net uid:-17 parent:null provider:NONE active:null
+INIT net uid:-18 parent:null provider:NONE active:null
+INIT net uid:-19 parent:null provider:NONE active:null
+.INIT net uid:-20 parent:null provider:NONE active:null
+INIT net uid:-21 parent:null provider:NONE active:null
+INIT net uid:-22 parent:null provider:NONE active:null
+INIT net uid:-23 parent:null provider:NONE active:null
+INIT net uid:-24 parent:null provider:NONE active:null
+INIT net uid:-25 parent:null provider:NONE active:null
+INIT net uid:-26 parent:null provider:NONE active:null
+INIT net uid:-27 parent:null provider:NONE active:null
+INIT net uid:-28 parent:null provider:NONE active:null
+INIT net uid:-29 parent:null provider:NONE active:null
+INIT net uid:-30 parent:null provider:NONE active:null
+INIT net uid:-31 parent:null provider:NONE active:null
+INIT net uid:-32 parent:null provider:NONE active:null
+INIT net uid:-33 parent:null provider:NONE active:null
+INIT net uid:-34 parent:null provider:NONE active:null
+INIT net uid:-35 parent:null provider:NONE active:null
+.INIT net uid:-36 parent:null provider:NONE active:null
+INIT net uid:-37 parent:null provider:NONE active:null
+INIT net uid:-38 parent:null provider:NONE active:null
+POST MISSING CONTEXT net uid:26 handle:TCP
+PRE MISSING CONTEXT net uid:-17 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-17 handle:NextTickWrap
+DESTROY net uid:-17 context:undefined active:null
+PRE MISSING CONTEXT net uid:-18 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-18 handle:NextTickWrap
+DESTROY net uid:-18 context:undefined active:null
+PRE MISSING CONTEXT net uid:-19 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-19 handle:NextTickWrap
+DESTROY net uid:-19 context:undefined active:null
+PRE MISSING CONTEXT net uid:-20 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-20 handle:NextTickWrap
+DESTROY net uid:-20 context:undefined active:null
+PRE MISSING CONTEXT net uid:-21 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-21 handle:NextTickWrap
+DESTROY net uid:-21 context:undefined active:null
+PRE MISSING CONTEXT net uid:-22 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-22 handle:NextTickWrap
+DESTROY net uid:-22 context:undefined active:null
+PRE MISSING CONTEXT net uid:-23 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-23 handle:NextTickWrap
+DESTROY net uid:-23 context:undefined active:null
+PRE MISSING CONTEXT net uid:-24 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-24 handle:NextTickWrap
+DESTROY net uid:-24 context:undefined active:null
+PRE MISSING CONTEXT net uid:-25 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-25 handle:NextTickWrap
+DESTROY net uid:-25 context:undefined active:null
+PRE MISSING CONTEXT net uid:-26 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-26 handle:NextTickWrap
+DESTROY net uid:-26 context:undefined active:null
+PRE MISSING CONTEXT net uid:-27 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-27 handle:NextTickWrap
+DESTROY net uid:-27 context:undefined active:null
+PRE MISSING CONTEXT net uid:-28 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-28 handle:NextTickWrap
+DESTROY net uid:-28 context:undefined active:null
+PRE MISSING CONTEXT net uid:-29 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-29 handle:NextTickWrap
+DESTROY net uid:-29 context:undefined active:null
+PRE MISSING CONTEXT net uid:-30 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-30 handle:NextTickWrap
+DESTROY net uid:-30 context:undefined active:null
+PRE MISSING CONTEXT net uid:-31 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-31 handle:NextTickWrap
+DESTROY net uid:-31 context:undefined active:null
+PRE MISSING CONTEXT net uid:-32 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-32 handle:NextTickWrap
+DESTROY net uid:-32 context:undefined active:null
+PRE MISSING CONTEXT net uid:-33 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-33 handle:NextTickWrap
+DESTROY net uid:-33 context:undefined active:null
+PRE MISSING CONTEXT net uid:-34 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-34 handle:NextTickWrap
+DESTROY net uid:-34 context:undefined active:null
+PRE MISSING CONTEXT net uid:-35 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-35 handle:NextTickWrap
+DESTROY net uid:-35 context:undefined active:null
+PRE MISSING CONTEXT net uid:-36 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-36 handle:NextTickWrap
+DESTROY net uid:-36 context:undefined active:null
+PRE MISSING CONTEXT net uid:-37 handle:NextTickWrap
+INIT net uid:27 parent:null provider:SHUTDOWNWRAP active:null
+POST MISSING CONTEXT net uid:-37 handle:NextTickWrap
+DESTROY net uid:-37 context:undefined active:null
+PRE MISSING CONTEXT net uid:-38 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-38 handle:NextTickWrap
+DESTROY net uid:-38 context:undefined active:null
+DESTROY net uid:22 context:undefined active:null
+PRE MISSING CONTEXT net uid:27 handle:ShutdownWrap
+POST MISSING CONTEXT net uid:27 handle:ShutdownWrap
+DESTROY net uid:27 context:undefined active:null
+ENTER net uid:23 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:23 entryPoint:TCP context:{ _ns_name: 'net', test: 'MONKEY' }
+getting key:test=MONKEY in ns:net uid:23 active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-39 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-40 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-41 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-42 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-43 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-44 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-45 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-46 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-47 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:23 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:23 handle:TCP context:{ _ns_name: 'net', test: 'MONKEY' }
+ENTER net uid:-39 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-39 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-39 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-39 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-39 context:undefined active:null
+ENTER net uid:-40 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-40 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-40 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-40 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-40 context:undefined active:null
+.ENTER net uid:-41 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-41 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-41 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-41 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-41 context:undefined active:null
+ENTER net uid:-42 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-42 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-42 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-42 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-42 context:undefined active:null
+ENTER net uid:-43 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-43 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-43 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-43 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-43 context:undefined active:null
+ENTER net uid:-44 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-44 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-44 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-44 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-44 context:undefined active:null
+ENTER net uid:-45 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-45 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-45 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-45 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-45 context:undefined active:null
+ENTER net uid:-46 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-46 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-46 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-46 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-46 context:undefined active:null
+ENTER net uid:-47 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-47 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-47 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-47 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-47 context:undefined active:null
+ENTER net uid:23 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:23 entryPoint:TCP context:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-48 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+INIT net uid:-49 parent:null provider:NONE active:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:23 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:23 handle:TCP context:{ _ns_name: 'net', test: 'MONKEY' }
+ENTER net uid:-48 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-48 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-48 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-48 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-48 context:undefined active:null
+ENTER net uid:-49 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:-49 entryPoint:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:-49 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:-49 handle:NextTickWrap context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:-49 context:undefined active:null
+ENTER net uid:23 context: { _ns_name: 'net', test: 'MONKEY' }
+PRE net uid:23 entryPoint:TCP context:{ _ns_name: 'net', test: 'MONKEY' }
+EXIT net uid:23 context: { _ns_name: 'net', test: 'MONKEY' }
+POST net uid:23 handle:TCP context:{ _ns_name: 'net', test: 'MONKEY' }
+DESTROY net uid:23 context:undefined active:null
+PRE MISSING CONTEXT net uid:26 handle:TCP
+INIT net uid:-50 parent:null provider:NONE active:null
+INIT net uid:-51 parent:null provider:NONE active:null
+INIT net uid:-52 parent:null provider:NONE active:null
+
+#PRE & POST uid:22 called multiple times
+
+POST MISSING CONTEXT net uid:26 handle:TCP
+PRE MISSING CONTEXT net uid:-50 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-50 handle:NextTickWrap
+DESTROY net uid:-50 context:undefined active:null
+PRE MISSING CONTEXT net uid:-51 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-51 handle:NextTickWrap
+DESTROY net uid:-51 context:undefined active:null
+PRE MISSING CONTEXT net uid:-52 handle:NextTickWrap
+POST MISSING CONTEXT net uid:-52 handle:NextTickWrap
+DESTROY net uid:-52 context:undefined active:null
+PRE MISSING CONTEXT net uid:26 handle:TCP
+POST MISSING CONTEXT net uid:26 handle:TCP
+DESTROY net uid:26 context:undefined active:null
+INIT net uid:-53 parent:null provider:NONE active:null
+INIT net uid:-54 parent:null provider:NONE active:null
+INIT net uid:-55 parent:null provider:NONE active:null
+INIT net uid:-56 parent:null provider:NONE active:null

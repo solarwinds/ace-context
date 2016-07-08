@@ -1,0 +1,121 @@
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:{ test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'newContextValue' }
+INIT ns:net id:2 active:{ test: 'newContextValue' }
+INIT ns:net id:2 active:{ test: 'newContextValue' }
+POST ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'newContextValue' }
+POST ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'newContextValue' }
+POST ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'MONKEY' }
+INIT ns:net id:2 active:{ test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'MONKEY' }
+INIT ns:net id:2 active:{ test: 'MONKEY' }
+INIT ns:net id:2 active:{ test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+PRE ns:net id:2 active:null
+ENTER context: { test: 'newContextValue' }
+INIT ns:net id:2 active:{ test: 'newContextValue' }
+INIT ns:net id:2 active:{ test: 'newContextValue' }
+INIT ns:net id:2 active:{ test: 'newContextValue' }
+POST ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'newContextValue' }
+POST ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'newContextValue' }
+POST ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'newContextValue' }
+POST ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+ENTER context: {}
+ENTER context: {}
+INIT ns:net id:2 active:{ test: 'newContextValue' }
+INIT ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+EXIT context: { test: 'originalValue' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'newContextValue' }
+ENTER context: {}
+INIT ns:net id:2 active:{ test: 'MONKEY' }
+INIT ns:net id:2 active:{ test: 'MONKEY' }
+INIT ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'MONKEY' }
+POST ns:net id:2 active:{ test: 'MONKEY' }
+EXIT context: { test: 'MONKEY' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'newContextValue' }
+INIT ns:net id:2 active:{ test: 'newContextValue' }
+INIT ns:net id:2 active:{ test: 'newContextValue' }
+POST ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'newContextValue' }
+POST ns:net id:2 active:{ test: 'newContextValue' }
+EXIT context: { test: 'newContextValue' }
+PRE ns:net id:2 active:null
+ENTER context: { test: 'MONKEY' }
+INIT ns:net id:2 active:{ test: 'MONKEY' }
+INIT ns:net id:2 active:{ test: 'MONKEY' }
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null
+INIT ns:net id:2 active:null

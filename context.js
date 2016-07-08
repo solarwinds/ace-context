@@ -19,7 +19,7 @@ const ERROR_SYMBOL = 'error@context';
 //const contexts = new Map();
 const trace = [];
 const traceHandles = [];
-let currentUid = -1;
+let currentUid;
 
 const invertedProviders = [];
 for (let key in asyncHook.providers) {
@@ -41,16 +41,17 @@ Namespace.prototype.set = function set(key, value) {
     throw new Error('No context available. ns.run() or ns.bind() must be called first.');
   }
 
-  debug2('setting key:' + key + '=' + value + ' in ns:' + this.name + ' active:' + util.inspect(this.active, true));
+  debug2('setting key:' + key + '=' + value + ' in ns:' + this.name + ' uid:' + currentUid + ' active:' + util.inspect(this.active, true));
   this.active[key] = value;
   return value;
 };
 
 Namespace.prototype.get = function get(key) {
   if (!this.active) {
+    debug2('getting key:' + key + '=undefined' + ' in ns:' + this.name + ' uid:' + currentUid + ' active:' + util.inspect(this.active, true));
     return undefined;
   }
-  debug2('getting key:' + key + '=' + this.active[key] + ' in ns:' + this.name + ' active:' + util.inspect(this.active, true));
+  debug2('getting key:' + key + '=' + this.active[key] + ' in ns:' + this.name + ' uid:' + currentUid + ' active:' + util.inspect(this.active, true));
   return this.active[key];
 };
 
@@ -115,7 +116,7 @@ Namespace.prototype.bind = function bind(fn, context) {
 Namespace.prototype.enter = function enter(context) {
   assert.ok(context, 'context must be provided for entering');
 
-  debug2('ENTER context: ' + util.inspect(context));
+  debug2('ENTER ' + this.name + ' uid:' + currentUid + ' context: ' + util.inspect(context));
 
   this._set.push(this.active);
   this.active = context;
@@ -124,7 +125,7 @@ Namespace.prototype.enter = function enter(context) {
 Namespace.prototype.exit = function exit(context) {
   assert.ok(context, 'context must be provided for exiting');
 
-  debug2('EXIT context: ' + util.inspect(context));
+  debug2('EXIT ' + this.name + ' uid:' + currentUid + ' context: ' + util.inspect(context));
 
   // Fast path for most exits that are at the top of the stack
   if (this.active === context) {
@@ -138,17 +139,15 @@ Namespace.prototype.exit = function exit(context) {
 
   if (index < 0) {
     debug2('??ERROR?? context exiting but not entered - ignoring: ' + util.inspect(context));
-    //return;
+    assert.ok(index >= 0, 'context not currently entered; can\'t exit. \n' + util.inspect(this) + '\n' + util.inspect(context));
     /*let len = trace.length;
      for (let i = 0; i < len; i++) {
      console.log(trace[i]);
      }*/
+  } else {
+    assert.ok(index, 'can\'t remove top context');
+    this._set.splice(index, 1);
   }
-
-  //assert.ok(index >= 0, 'context not currently entered; can\'t exit. \n' + util.inspect(this) + '\n' + util.inspect(context));
-  assert.ok(index, 'can\'t remove top context');
-
-  this._set.splice(index, 1);
 };
 
 Namespace.prototype.bindEmitter = function bindEmitter(emitter) {
@@ -212,38 +211,44 @@ function createNamespace(name) {
 
   asyncHook.addHooks({
     init(uid, handle, provider, parentUid, parentHandle) {
-      currentUid = parentUid || uid;
-      namespace._contexts.set(currentUid, namespace.active);
+      //currentUid = parentUid || uid;
+      currentUid = uid;
 
-      trace.push('INIT ns:' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + invertedProviders[provider]);
-      debug2('INIT ns:' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + invertedProviders[provider]
-        + ' context:' + util.inspect(namespace._contexts.get(currentUid))
+      //CHAIN Parent's Context onto child if none exists.
+      if (parentUid && !namespace.active) {
+        namespace._contexts.set(uid, namespace._contexts.get(parentUid));
+      } else {
+        namespace._contexts.set(currentUid, namespace.active);
+      }
+
+      //trace.push('INIT ns:' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + invertedProviders[provider]);
+      debug2('INIT ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + invertedProviders[provider]
         + ' active:' + util.inspect(namespace.active, true));
-      //debug('INIT', namespace);
       /*trace.push({
        ns: name,
        currentId: currentUid,
        provider: invertedProviders[provider],
        arguments: arguments
        });*/
-      //trace.push('init args: ' + util.inspect(arguments));
-      if (parentHandle) {
-        trace.push('PARENTID: ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
+
+      if (parentUid) {
+        //trace.push('PARENTID: ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
+        debug2('PARENTID: ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
       }
 
     },
     pre(uid, handle) {
       currentUid = uid;
       let context = namespace._contexts.get(uid);
-      //if (context && context._ns_name && context._ns_name === namespace.name) {
       if (context) {
-        namespace.enter(context);
-        trace.push('PRE ' + name + ' uid:' + uid + ' entryPoint:' + util.inspect(handle) + ' context:' + util.inspect(namespace._contexts.get(currentUid))
-          + ' active:' + util.inspect(namespace.active, true));
-        debug2('PRE ' + name + ' uid:' + uid + ' entryPoint:' + util.inspect(handle));
-      }
-      //debug('PRE', namespace);
+        // trace.push('PRE ' + name + ' uid:' + uid + ' entryPoint:' + getFunctionName(handle) + ' context:' + util.inspect(context)
+        //   + ' active:' + util.inspect(namespace.active, true));
+        debug2('PRE ' + name + ' uid:' + uid + ' entryPoint:' + getFunctionName(handle) + ' context:' + util.inspect(context));
 
+        namespace.enter(context);
+      } else {
+        debug2('PRE MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
+      }
       /*trace.push({
        ns: name,
        currentId: currentUid,
@@ -254,14 +259,15 @@ function createNamespace(name) {
     post(uid, handle) {
       currentUid = uid;
       let context = namespace._contexts.get(uid);
-      //if (context && context._ns_name && context._ns_name === namespace.name) {
       if (context) {
+        // trace.push('POST ' + name + ' uid:' + uid + ' handle:' + util.inspect(handle) + ' context:' + util.inspect(context)
+        //   + ' active:' + util.inspect(namespace.active, true));
+        debug2('POST ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle) + ' context:' + util.inspect(context));
+
         namespace.exit(context);
-        trace.push('POST ' + name + ' uid:' + uid + ' handle:' + util.inspect(handle) + ' context:' + util.inspect(namespace._contexts.get(currentUid))
-          + ' active:' + util.inspect(namespace.active, true));
-        debug2('POST ' + name + ' uid:' + uid + ' handle:' + util.inspect(handle));
+      } else {
+        debug2('POST MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
       }
-      //debug('POST', namespace);
       /*trace.push({
        ns: name,
        currentId: currentUid,
@@ -273,10 +279,9 @@ function createNamespace(name) {
       currentUid = uid;
       namespace._contexts.delete(uid);
 
-      trace.push('DESTROY ' + name + ' uid:' + uid);
+      // trace.push('DESTROY ' + name + ' uid:' + uid);
       debug2('DESTROY ' + name + ' uid:' + uid + ' context:' + util.inspect(namespace._contexts.get(currentUid))
         + ' active:' + util.inspect(namespace.active, true));
-      //debug('DESTROY', namespace);
       /*trace.push({
        ns: name,
        currentId: currentUid
@@ -360,7 +365,7 @@ function setupGlobalAsyncHooks() {
 
 }
 
-if (1 === 2) {
+if (1 === 1) {
   setupGlobalAsyncHooks();
 }
 
@@ -392,6 +397,20 @@ module.exports = {
   trace: trace,
   debug: debug
 };
+
+function getFunctionName(fn) {
+  if (!fn) {
+    return fn;
+  }
+  if (typeof fn === 'function') {
+    if (fn.name) {
+      return fn.name;
+    }
+    return (fn.toString().trim().match(/^function\s*([^\s(]+)/) || [])[1];
+  } else if (fn.constructor && fn.constructor.name) {
+    return fn.constructor.name;
+  }
+}
 
 
 // Add back to callstack
