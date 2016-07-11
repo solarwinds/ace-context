@@ -18,7 +18,7 @@ test("event emitters bound to CLS context", function(t) {
     // emulate an incoming data emitter
     setTimeout(function() {
       ee.emit('data', 'hi');
-    }, 1000);
+    }, 100);
 
     t.doesNotThrow(function() {
       ns1.bindEmitter(ee);

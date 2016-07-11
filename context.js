@@ -18,8 +18,8 @@ const ERROR_SYMBOL = 'error@context';
 
 //const contexts = new Map();
 const trace = [];
-const traceHandles = [];
-let currentUid;
+//const traceHandles = [];
+let currentUid = '';
 
 const invertedProviders = [];
 for (let key in asyncHook.providers) {
@@ -41,27 +41,31 @@ Namespace.prototype.set = function set(key, value) {
     throw new Error('No context available. ns.run() or ns.bind() must be called first.');
   }
 
-  debug2('setting key:' + key + '=' + value + ' in ns:' + this.name + ' uid:' + currentUid + ' active:' + util.inspect(this.active, true));
+  debug2('    SETTING KEY:' + key + '=' + value + ' in ns:' + this.name + ' uid:' + currentUid + ' active:' + util.inspect(this.active, true));
   this.active[key] = value;
   return value;
 };
 
 Namespace.prototype.get = function get(key) {
   if (!this.active) {
-    debug2('getting key:' + key + '=undefined' + ' in ns:' + this.name + ' uid:' + currentUid + ' active:' + util.inspect(this.active, true));
+    debug2('    GETTING KEY:' + key + '=undefined' + ' ' + this.name + ' uid:' + currentUid + ' active:' + util.inspect(this.active, true));
     return undefined;
   }
-  debug2('getting key:' + key + '=' + this.active[key] + ' in ns:' + this.name + ' uid:' + currentUid + ' active:' + util.inspect(this.active, true));
+  debug2('    GETTING KEY:' + key + '=' + this.active[key] + ' ' + this.name + ' uid:' + currentUid + ' active:' + util.inspect(this.active, true));
   return this.active[key];
 };
 
 Namespace.prototype.createContext = function createContext() {
-  debug2('creating Context in ns:' + this.name + ' active:' + util.inspect(this.active, true, 2, true));
+  debug2('   CREATING Context: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + ' active:' + util.inspect(this.active, true, 2, true));
+
   let context = Object.create(this.active ? this.active : Object.prototype);
   context._ns_name = this.name;
+  context.id = currentUid;
+
   //process._rawDebug('created Context in ns:' + this.name + ' context:' + util.inspect(context, true, 2, true) + ' context.prototype:' + util.inspect(context.__proto__, true, 2, true));
-  debug2('created Context in ns:' + this.name + ' context:' + util.inspect(context, true, 2, true));
+  debug2('   CREATED Context: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + ' context:' + util.inspect(context, true, 2, true));
   //process._rawDebug('isPrototype of active' + context.prototype.isPrototypeOf(this.active));
+
   return context;
 };
 
@@ -69,7 +73,7 @@ Namespace.prototype.run = function run(fn) {
   let context = this.createContext();
   this.enter(context);
   try {
-    debug2('before run: ' + util.inspect(context));
+    debug2(' BEFORE RUN: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
     fn(context);
     return context;
   }
@@ -80,7 +84,7 @@ Namespace.prototype.run = function run(fn) {
     throw exception;
   }
   finally {
-    debug2('after run: ' + util.inspect(context));
+    debug2(' AFTER RUN: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
     this.exit(context);
   }
 };
@@ -116,7 +120,7 @@ Namespace.prototype.bind = function bind(fn, context) {
 Namespace.prototype.enter = function enter(context) {
   assert.ok(context, 'context must be provided for entering');
 
-  debug2('ENTER ' + this.name + ' uid:' + currentUid + ' context: ' + util.inspect(context));
+  debug2('  ENTER ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' context: ' + util.inspect(context));
 
   this._set.push(this.active);
   this.active = context;
@@ -125,7 +129,7 @@ Namespace.prototype.enter = function enter(context) {
 Namespace.prototype.exit = function exit(context) {
   assert.ok(context, 'context must be provided for exiting');
 
-  debug2('EXIT ' + this.name + ' uid:' + currentUid + ' context: ' + util.inspect(context));
+  debug2('  EXIT ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' context: ' + util.inspect(context));
 
   // Fast path for most exits that are at the top of the stack
   if (this.active === context) {
@@ -206,6 +210,7 @@ function getNamespace(name) {
 function createNamespace(name) {
   assert.ok(name, 'namespace must be given a name.');
 
+  debug2('CREATING NAMESPACE ' + name);
   let namespace = new Namespace(name);
   namespace.id = currentUid;
 
@@ -214,8 +219,9 @@ function createNamespace(name) {
       //currentUid = parentUid || uid;
       currentUid = uid;
 
-      //CHAIN Parent's Context onto child if none exists.
-      if (parentUid && !namespace.active) {
+      //CHAIN Parent's Context onto child if none exists. This is needed to pass net-events.spec
+      //if (parentUid && !namespace.active) {
+      if (parentUid) {
         namespace._contexts.set(uid, namespace._contexts.get(parentUid));
       } else {
         namespace._contexts.set(currentUid, namespace.active);
@@ -243,11 +249,11 @@ function createNamespace(name) {
       if (context) {
         // trace.push('PRE ' + name + ' uid:' + uid + ' entryPoint:' + getFunctionName(handle) + ' context:' + util.inspect(context)
         //   + ' active:' + util.inspect(namespace.active, true));
-        debug2('PRE ' + name + ' uid:' + uid + ' entryPoint:' + getFunctionName(handle) + ' context:' + util.inspect(context));
+        debug2(' PRE ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle) + ' context:' + util.inspect(context));
 
         namespace.enter(context);
       } else {
-        debug2('PRE MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
+        debug2(' PRE MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
       }
       /*trace.push({
        ns: name,
@@ -262,11 +268,11 @@ function createNamespace(name) {
       if (context) {
         // trace.push('POST ' + name + ' uid:' + uid + ' handle:' + util.inspect(handle) + ' context:' + util.inspect(context)
         //   + ' active:' + util.inspect(namespace.active, true));
-        debug2('POST ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle) + ' context:' + util.inspect(context));
+        debug2(' POST ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle) + ' context:' + util.inspect(context));
 
         namespace.exit(context);
       } else {
-        debug2('POST MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
+        debug2(' POST MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
       }
       /*trace.push({
        ns: name,
@@ -277,7 +283,6 @@ function createNamespace(name) {
     },
     destroy(uid) {
       currentUid = uid;
-      namespace._contexts.delete(uid);
 
       // trace.push('DESTROY ' + name + ' uid:' + uid);
       debug2('DESTROY ' + name + ' uid:' + uid + ' context:' + util.inspect(namespace._contexts.get(currentUid))
@@ -286,6 +291,9 @@ function createNamespace(name) {
        ns: name,
        currentId: currentUid
        });*/
+
+      namespace._contexts.delete(uid);
+
     }
   });
 
@@ -315,7 +323,7 @@ function reset() {
 process.namespaces = {};
 
 /**
- * Really only used to set currentUid used during new Namespace() creation.
+ * Used to set currentUid for first new Namespace() creation.
  */
 function setupGlobalAsyncHooks() {
 

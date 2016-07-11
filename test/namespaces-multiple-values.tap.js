@@ -22,10 +22,10 @@ test("multiple namespaces handles them correctly", function(t) {
 
           process.nextTick(function() {
             t.equal(ns1.get('name'), 'tom1', "ns1 value correct");
-            process._rawDebug(util.inspect(ns1), true);
+            //process._rawDebug(util.inspect(ns1), true);
 
             t.equal(ns2.get('name'), 'paul2', "ns2 value correct");
-            process._rawDebug(util.inspect(ns2), true);
+            //process._rawDebug(util.inspect(ns2), true);
 
             ns1.set('name', 'bob');
             ns2.set('name', 'alice');
