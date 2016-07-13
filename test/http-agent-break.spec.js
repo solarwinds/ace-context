@@ -16,13 +16,13 @@ var httpAgent = new http.Agent({
 var namespace;
 
 function httpGetRequest(cb) {
+
   namespace.bindEmitter(superagent.Request.super_.super_.prototype);
-  //namespace.bindEmitter(superagent.Request.prototype);
+
   var r = superagent['get']('http://www.google.com');
-  //var r = superagent['get']('http://www.google.com/search?q='+ q);
 
   if (keepAlive) {
-    process._rawDebug('Keep alive ENABLED, setting http agent');
+    //process._rawDebug('Keep alive ENABLED, setting http agent');
     r.agent(httpAgent);
   }
 
@@ -41,10 +41,10 @@ function doClsAction(id, cb) {
     //var xid = Math.floor(Math.random() * 1000);
     var xid = id;
     namespace.set('xid', xid);
-    process._rawDebug('before calling httpGetRequest: xid value', namespace.get('xid'));
+    //process._rawDebug('before calling httpGetRequest: xid value', namespace.get('xid'));
 
     httpGetRequest(function(e) {
-      process._rawDebug('returned from action xid value', namespace.get('xid'), 'expected', xid);
+      //process._rawDebug('returned from action xid value', namespace.get('xid'), 'expected', xid);
       assert.equal(namespace.get('xid'), xid);
       cb(e);
     });
@@ -53,7 +53,7 @@ function doClsAction(id, cb) {
 }
 
 function test() {
-  process._rawDebug('Starting http-agent-break test');
+  //process._rawDebug('Starting http-agent-break test');
   namespace = cls.createNamespace('test');
 
   var firstDone = false;

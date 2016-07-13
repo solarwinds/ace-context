@@ -18,7 +18,7 @@ describe('multiple namespaces handles them correctly', () => {
   var ns2 = cls.createNamespace('TWO');
 
 
-  before(() => {
+  before((done) => {
 
     ns1.run(() => {
       ns2.run(() => {
@@ -44,6 +44,7 @@ describe('multiple namespaces handles them correctly', () => {
               setTimeout(function() {
                 test3Val = ns1.get('name');
                 test4Val = ns2.get('name');
+                done();
               });
 
             });

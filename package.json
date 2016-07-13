@@ -1,5 +1,5 @@
 {
-  "name": "continuation-local-storage",
+  "name": "cls-hooked",
   "version": "3.1.7",
   "description": "userland implementation of https://github.com/joyent/node/issues/5243",
   "main": "context.js",
@@ -7,19 +7,18 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha test/*.spec.js, test/*.test.js",
+    "test": "mocha test/*.js",
     "test-tap": "tap test/tap/*.tap.js"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/othiym23/node-continuation-local-storage.git"
+    "url": "https://github.com/jeff-lewis/node-continuation-local-storage.git"
   },
   "keywords": [
     "threading",
     "shared",
     "context",
     "domains",
-    "tracing",
     "logging"
   ],
   "author": "Forrest L Norvell <ogd@aoaioxxysz.net>",
