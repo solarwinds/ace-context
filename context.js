@@ -19,7 +19,7 @@ const ERROR_SYMBOL = 'error@context';
 //const contexts = new Map();
 const trace = [];
 //const traceHandles = [];
-let currentUid = '';
+let currentUid = -999999999;
 
 const invertedProviders = [];
 for (let key in asyncHook.providers) {

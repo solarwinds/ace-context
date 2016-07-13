@@ -6,7 +6,6 @@ var TEST_VALUE = 0x1337;
 var PORT = 55667;
 
 var chai = require('chai');
-var expect = chai.expect;
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
 chai.should();
@@ -14,18 +13,18 @@ chai.use(sinonChai);
 
 describe('continuation-local state with http connection', function() {
 
+  this.timeout(1000);
+
   let http = require('http');
   let cls = require('../context');
 
   before(function() {
-    require.cache = {};
+    //require.cache = {};
   });
 
   after(function() {
     cls.reset();
-    delete this.cls2;
-    delete this.http;
-    require.cache = {};
+    //require.cache = {};
   });
 
   describe('client server', function(done) {
@@ -34,49 +33,80 @@ describe('continuation-local state with http connection', function() {
 
     var requestSpy = sinon.spy();
     var requestDataSpy = sinon.spy();
+    var responseSpy = sinon.spy();
+    var responseDataSpy = sinon.spy();
+    var finalContextValue;
 
-    namespace.run(function() {
-      namespace.set('test', TEST_VALUE);
-      var server = http.createServer();
+    before((done) => {
 
-      server.on('request', function OnServerConnection(req, res) {
-        requestSpy(namespace.get('test'));
+      namespace.run(function() {
+        namespace.set('test', TEST_VALUE);
+        var server = http.createServer();
 
-        req.on('data', function OnServerSocketData(data) {
-          expect(data.toString('utf-8')).equal(DATUM1, 'should get DATUM1');
-          expect(namespace.get('test')).equal(TEST_VALUE, 'state is still preserved');
-          server.close();
-          res.end(DATUM2);
-        });
-      });
+        server.on('request', function OnServerConnection(req, res) {
+          requestSpy(namespace.get('test'));
 
-      server.listen(PORT, function OnServerListen() {
-        namespace.run(function() {
-          namespace.set('test', 'MONKEY');
-          var request = http.request({ host: 'localhost', port: PORT, method: 'POST' }, function OnClientConnect(res) {
-            expect(namespace.get('test')).equal('MONKEY', 'state preserved for client connection');
-            res.on('data', function OnClientSocketData(data) {
-              expect(data.toString('utf-8')).equal(DATUM2, 'should get DATUM1');
-              expect(namespace.get('test')).equal('MONKEY', 'state preserved for client data');
-              done();
-            });
+          req.on('data', function OnServerSocketData(data) {
+            requestDataSpy(data.toString('utf-8'), namespace.get('test'));
+            server.close();
+            res.end(DATUM2);
           });
-          request.write(DATUM1);
         });
 
+        server.listen(PORT, function OnServerListen() {
+
+          namespace.run(function() {
+
+            namespace.set('test', 'MONKEY');
+
+            var request = http.request({ host: 'localhost', port: PORT, method: 'POST' }, function OnClientConnect(res) {
+
+              responseSpy(namespace.get('test'));
+
+              res.on('data', function OnClientSocketData(reponseData) {
+                responseDataSpy(reponseData.toString('utf-8'), namespace.get('test'));
+                done();
+              });
+            });
+
+            request.write(DATUM1);
+          });
+
+        });
+
+        finalContextValue = namespace.get('test');
       });
 
-      expect(namespace.get('test')).equal(TEST_VALUE, 'state has been mutated');
+
+    })
+
+    it('server request event should be called', () => {
+      requestSpy.called.should.be.true;
     });
 
-    it('server request event should be called', () =>{
-      requestSpy.called.should.equal.true;
+    it('server request event should receive data', () => {
+      requestSpy.should.have.been.calledWith(TEST_VALUE);
     });
 
-    it('server request event should receive data', () =>{
-      requestSpy.should.have.been.calledWith(TEST_VALUE); //, 'state has been mutated');
+    it('server request data event should be called', () => {
+      requestDataSpy.called.should.be.true;
     });
 
+    it('server request data event should receive data', () => {
+      requestDataSpy.should.have.been.calledWith(DATUM1, TEST_VALUE);
+    });
+
+    it('client data event should be called', () => {
+      responseSpy.called.should.be.true;
+    });
+
+    it('client data event should receive data', () => {
+      responseDataSpy.should.have.been.calledWith(DATUM2, 'MONKEY');
+    });
+
+    it('final context value should be ' + TEST_VALUE, () => {
+      finalContextValue.should.be.equal(TEST_VALUE);
+    });
 
   });
 });
