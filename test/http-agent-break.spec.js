@@ -1,6 +1,6 @@
 'use strict';
 
-var clsModule = require('./../context');
+var cls = require('./../context');
 const superagent = require('superagent');
 const assert = require('assert');
 
@@ -54,7 +54,7 @@ function doClsAction(id, cb) {
 
 function test() {
   process._rawDebug('Starting http-agent-break test');
-  namespace = clsModule.createNamespace('test');
+  namespace = cls.createNamespace('test');
 
   var firstDone = false;
 

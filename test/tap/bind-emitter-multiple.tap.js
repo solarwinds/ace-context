@@ -2,7 +2,7 @@
 
 var test = require('tap').test;
 var EventEmitter = require('events').EventEmitter;
-var cls = require('../context.js');
+var cls = require('../../context.js');
 const util = require('util');
 
 test("event emitters bound to CLS context", function(t) {

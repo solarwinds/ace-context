@@ -403,7 +403,8 @@ module.exports = {
   destroyNamespace: destroyNamespace,
   reset: reset,
   trace: trace,
-  debug: debug
+  debug: debug,
+  ERROR_SYMBOL: ERROR_SYMBOL
 };
 
 function getFunctionName(fn) {
