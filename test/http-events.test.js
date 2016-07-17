@@ -11,23 +11,14 @@ var sinonChai = require('sinon-chai');
 chai.should();
 chai.use(sinonChai);
 
-describe('continuation-local state with http connection', function() {
+describe('cls with http connections', function () {
 
   this.timeout(1000);
 
   let http = require('http');
   let cls = require('../context');
 
-  before(function() {
-    //require.cache = {};
-  });
-
-  after(function() {
-    cls.reset();
-    //require.cache = {};
-  });
-
-  describe('client server', function(done) {
+  describe('client server', function clientServerTest() {
 
     var namespace = cls.createNamespace('http');
 
@@ -39,7 +30,7 @@ describe('continuation-local state with http connection', function() {
 
     before((done) => {
 
-      namespace.run(function() {
+      namespace.run(() => {
         namespace.set('test', TEST_VALUE);
         var server = http.createServer();
 
@@ -55,11 +46,11 @@ describe('continuation-local state with http connection', function() {
 
         server.listen(PORT, function OnServerListen() {
 
-          namespace.run(function() {
+          namespace.run(() => {
 
             namespace.set('test', 'MONKEY');
 
-            var request = http.request({ host: 'localhost', port: PORT, method: 'POST' }, function OnClientConnect(res) {
+            var request = http.request({host: 'localhost', port: PORT, method: 'POST'}, function OnClientConnect(res) {
 
               responseSpy(namespace.get('test'));
 

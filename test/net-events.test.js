@@ -1,75 +1,97 @@
 'use strict';
 
-var DATUM1 = 'Hello';
-var DATUM2 = 'GoodBye';
-var TEST_VALUE = 0x1337;
-var TEST_VALUE2 = 'MONKEY';
+require('mocha');
+const chai = require('chai');
+const util = require('util');
+const should = chai.should();
 
-var expect = require('chai').expect;
+const net = require('net');
+const cls = require('../context.js');
 
-describe('`net` connection', function () {
-    before(function () {
-        require.cache = {};
-        this.net = require('net');
-        this.cls2 = require('../context');
+describe('cls with net connection', () => {
+
+  let namespace = cls.createNamespace('net');
+  let testValue1;
+  let testValue2;
+  let testValue3;
+  let testValue4;
+
+  before((done) => {
+
+    let serverDone = false;
+    let clientDone = false;
+
+    namespace.run(() => {
+      namespace.set('test', 'originalValue');
+
+      var server;
+      namespace.run(() => {
+        namespace.set('test', 'newContextValue');
+
+        server = net.createServer((socket) => {
+          //namespace.bindEmitter(socket);
+
+          testValue1 = namespace.get('test');
+
+          socket.on('data', () => {
+            testValue2 = namespace.get('test');
+            server.close();
+            socket.end('GoodBye');
+
+            serverDone = true;
+            checkDone();
+          });
+
+        });
+
+        server.listen(() => {
+          var address = server.address();
+          namespace.run(() => {
+            namespace.set('test', 'MONKEY');
+
+            var client = net.connect(address.port, () => {
+              //namespace.bindEmitter(client);
+              testValue3 = namespace.get('test');
+              client.write('Hello');
+
+              client.on('data', () => {
+                testValue4 = namespace.get('test');
+                clientDone = true;
+                checkDone();
+              });
+
+            });
+          });
+        });
+      });
     });
 
-    after(function () {
-        this.cls2.reset();
-        delete this.cls2;
-        delete this.net;
-        require.cache = {};
-    });
+    function checkDone() {
+      if (serverDone && clientDone) {
+        done();
+      }
+    }
 
-    it('client server', function (done) {
-        var net = this.net;
-        var namespace = this.cls2.createNamespace('net');
+  });
 
-        namespace.run(
-            function namespace_run1(ctx) {
-                namespace.set('test', TEST_VALUE);
-                expect(namespace.get('test')).equal(ctx.test, 'context should be the same');
-                var server = net.createServer();
+  it('value newContextValue', () => {
+    should.exist(testValue1);
+    testValue1.should.equal('newContextValue');
+  });
 
-                server.on('connection', function OnServerConnection(socket) {
-                        expect(namespace.get('test')).equal(TEST_VALUE, 'state has been mutated');
+  it('value newContextValue 2', () => {
+    should.exist(testValue2);
+    testValue2.should.equal('newContextValue');
+  });
 
-                        socket.on('data', function OnServerSocketData(data) {
-                            data = data.toString('utf-8');
-                            expect(data).equal(DATUM1, 'should get DATUM1');
-                            expect(namespace.get('test')).equal(TEST_VALUE, 'state is still preserved');
+  it('value MONKEY', () => {
+    should.exist(testValue3);
+    testValue3.should.equal('MONKEY');
+  });
 
-                            socket.end(DATUM2);
-                            server.close();
-                        });
-                    }
-                );
+  it('value MONKEY 2', () => {
+    should.exist(testValue4);
+    testValue4.should.equal('MONKEY');
+  });
 
-                server.listen(function OnServerListen() {
-                    namespace.run(
-                        function namespace_run2(ctx) {
-                            namespace.set('test', TEST_VALUE2);
-                            expect(namespace.get('test')).equal(ctx.test, 'context should be the same');
-
-                            var port = server.address().port;
-                            var client = net.connect(port, function OnClientConnect() {
-                                expect(namespace.get('test')).equal(TEST_VALUE2, 'state preserved for client connection');
-                                client.on('data', function OnClientSocketData(data) {
-                                    data = data.toString('utf-8');
-                                    expect(data).equal(DATUM2, 'should get DATUM1');
-                                    expect(namespace.get('test')).equal(TEST_VALUE2, 'state preserved for client data');
-                                });
-
-                                client.on('close', function OnClientSocketClose() {
-                                    done();
-                                });
-
-                                client.write(DATUM1);
-                            });
-                        }
-                    );
-                });
-            }
-        );
-    });
 });

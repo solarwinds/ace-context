@@ -29,7 +29,7 @@ describe('Promise context convention', () => {
     ns.run(() => {
       ns.set('test', 3);
       promise.then(() => {
-        console.log('This Promise implementation follows convention ' + ns.get('test'));
+        //console.log('This Promise implementation follows convention ' + ns.get('test'));
         conventionId = ns.get('test');
       });
     });

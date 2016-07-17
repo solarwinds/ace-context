@@ -1,22 +1,12 @@
 'use strict';
 
-var expect = require('chai').expect;
+const expect = require('chai').expect;
+const cls = require('../context.js');
 
-describe("local-context", function () {
-    before(function () {
-        require.cache = {};
-        this.cls2 = require('../context');
-    });
-
-    after(function () {
-        this.cls2.reset();
-        delete this.cls2;
-        require.cache = {};
-    });
-
+describe("cls simple async local context", function () {
 
     it("asynchronously propagating state with local-context", function (done) {
-        var namespace = this.cls2.createNamespace('namespace');
+        var namespace = cls.createNamespace('namespace');
         expect(process.namespaces.namespace, "namespace has been created");
 
         namespace.run(function () {

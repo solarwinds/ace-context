@@ -1,22 +1,12 @@
 'use strict';
 
-var expect = require('chai').expect;
+const expect = require('chai').expect;
+const cls = require('../context.js');
 
-describe("edges and regression testing", function () {
-    before(function () {
-        require.cache = {};
-        this.cls2 = require('../context');
-    });
-
-    after(function () {
-        this.cls2.reset();
-        delete this.cls2;
-        require.cache = {};
-    });
-
+describe("cls edges and regression testing", function () {
 
     it("minimized test case that caused #6011 patch to fail", function (done) {
-        var n = this.cls2.createNamespace("test");
+        var n = cls.createNamespace("test");
         console.log('+');
         // when the flaw was in the patch, commenting out this line would fix things:
         process.nextTick(function () { console.log('!'); });
