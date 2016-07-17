@@ -2,7 +2,7 @@
 
 var test         = require('tap').test
   , EventEmitter = require('events').EventEmitter
-  , cls          = require('../context.js')
+  , cls          = require('../../context.js')
   ;
 
 test("event emitters bound to CLS context", function (t) {
@@ -283,7 +283,7 @@ test("event emitters bound to CLS context", function (t) {
 
       res.setEncoding('ascii');
       res.on('data', function (body) {
-        t.equal(body, 'WORD');
+        t.equal(body, 'WORD', 'body should match WORD');
 
         server.close();
         cls.destroyNamespace('no_listener');

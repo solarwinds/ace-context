@@ -3,7 +3,7 @@
 var EventEmitter = require('events').EventEmitter
   , assert       = require('assert')
   , test         = require('tap').test
-  , cls          = require('../context.js')
+  , cls          = require('../../context.js')
   ;
 
 var nextID = 1;

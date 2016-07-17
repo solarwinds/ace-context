@@ -1,0 +1,299 @@
+Starting http-agent-break test
+ CREATING NAMESPACE test
+    CREATING Context: test uid: len:0  active:null
+    CREATED Context: test uid: len:0  context:{ _ns_name: 'test', id: '' }
+   ENTER test uid: len:0 context: { _ns_name: 'test', id: '' }
+  BEFORE RUN: test uid: len:1 { _ns_name: 'test', id: '' }
+     SETTING KEY:xid=123 in ns:test uid: active:{ _ns_name: 'test', id: '' }
+     GETTING KEY:xid=123 test uid: active:{ _ns_name: 'test', id: '', xid: 123 }
+ before calling httpGetRequest: xid value 123
+ Keep alive ENABLED, setting http agent
+ INIT test uid:4 parent:null provider:TCPWRAP active:{ _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:5 parent:null provider:GETADDRINFOREQWRAP active:{ _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-1 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  AFTER RUN: test uid:-1 len:1 { _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-1 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-2 parent:null provider:NONE active:null
+  PRE test uid:-1 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-1 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:7 parent:null provider:HTTPPARSER active:{ _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-3 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-1 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-1 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-1 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-3 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-3 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-3 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-3 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-3 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:5 handle:GetAddrInfoReqWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:5 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:8 parent:null provider:TCPCONNECTWRAP active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:5 handle:GetAddrInfoReqWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:5 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:5 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:8 handle:TCPConnectWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:8 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:8 handle:TCPConnectWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:8 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:8 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE MISSING CONTEXT test uid:-2 handle:TimeoutWrap
+ INIT test uid:-4 parent:null provider:NONE active:null
+  POST MISSING CONTEXT test uid:-2 handle:TimeoutWrap
+ DESTROY test uid:-2 context:null active:null
+  PRE test uid:4 handle:TCP context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:4 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:7 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:9 parent:null provider:ZLIB active:{ _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-5 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-6 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:7 len:2 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:7 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-7 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:7 len:2 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-8 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:4 handle:TCP context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:4 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:-5 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-5 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-5 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-5 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-5 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-6 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-6 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-6 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-6 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-6 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-7 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-7 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-7 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-7 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-7 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-8 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-8 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-8 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-8 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-8 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE MISSING CONTEXT test uid:-4 handle:TimeoutWrap
+ INIT test uid:-9 parent:null provider:NONE active:null
+  POST MISSING CONTEXT test uid:-4 handle:TimeoutWrap
+ DESTROY test uid:-4 context:null active:null
+  PRE test uid:4 handle:TCP context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:4 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:7 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-10 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:7 len:2 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:7 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-11 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:7 len:2 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-12 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:4 handle:TCP context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:4 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:-10 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-10 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-10 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-10 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-10 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-11 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-11 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-13 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-11 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-11 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-11 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-12 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-12 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-12 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-12 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-12 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-13 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-13 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-13 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-13 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-13 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:9 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:9 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-14 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:9 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:9 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:-14 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-14 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-14 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-14 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-14 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE MISSING CONTEXT test uid:-9 handle:TimeoutWrap
+ INIT test uid:-15 parent:null provider:NONE active:null
+  POST MISSING CONTEXT test uid:-9 handle:TimeoutWrap
+ DESTROY test uid:-9 context:null active:null
+  PRE test uid:9 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:9 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-16 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:9 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:9 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:-16 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-16 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-16 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-16 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-16 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:9 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:9 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-17 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:9 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:9 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:-17 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-17 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-18 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+ http get status 200
+     GETTING KEY:xid=123 test uid:-18 active:{ _ns_name: 'test', id: '', xid: 123 }
+ returned from action xid value 123 expected 123
+     GETTING KEY:xid=123 test uid:-18 active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-17 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-17 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-17 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-18 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-18 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-18 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-18 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-18 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE MISSING CONTEXT test uid:-15 handle:TimeoutWrap
+    CREATING Context: test uid:-15 len:0  active:null
+    CREATED Context: test uid:-15 len:0  context:{ _ns_name: 'test', id: -15 }
+   ENTER test uid:-15 len:0 context: { _ns_name: 'test', id: -15 }
+  BEFORE RUN: test uid:-15 len:1 { _ns_name: 'test', id: -15 }
+     SETTING KEY:xid=456 in ns:test uid:-15 active:{ _ns_name: 'test', id: -15 }
+     GETTING KEY:xid=456 test uid:-15 active:{ _ns_name: 'test', id: -15, xid: 456 }
+ before calling httpGetRequest: xid value 456
+ Keep alive ENABLED, setting http agent
+ INIT test uid:-19 parent:null provider:NONE active:{ _ns_name: 'test', id: -15, xid: 456 }
+  AFTER RUN: test uid:-19 len:1 { _ns_name: 'test', id: -15, xid: 456 }
+   EXIT test uid:-19 len:1 context: { _ns_name: 'test', id: -15, xid: 456 }
+  POST MISSING CONTEXT test uid:-15 handle:TimeoutWrap
+ DESTROY test uid:-15 context:null active:null
+  PRE test uid:-19 handle:NextTickWrap context:{ _ns_name: 'test', id: -15, xid: 456 }
+   ENTER test uid:-19 len:0 context: { _ns_name: 'test', id: -15, xid: 456 }
+ INIT test uid:-20 parent:null provider:NONE active:{ _ns_name: 'test', id: -15, xid: 456 }
+  POST test uid:-19 handle:NextTickWrap context:{ _ns_name: 'test', id: -15, xid: 456 }
+   EXIT test uid:-19 len:1 context: { _ns_name: 'test', id: -15, xid: 456 }
+ DESTROY test uid:-19 context:{ _ns_name: 'test', id: -15, xid: 456 } active:null
+  PRE test uid:-20 handle:NextTickWrap context:{ _ns_name: 'test', id: -15, xid: 456 }
+   ENTER test uid:-20 len:0 context: { _ns_name: 'test', id: -15, xid: 456 }
+  POST test uid:-20 handle:NextTickWrap context:{ _ns_name: 'test', id: -15, xid: 456 }
+   EXIT test uid:-20 len:1 context: { _ns_name: 'test', id: -15, xid: 456 }
+ DESTROY test uid:-20 context:{ _ns_name: 'test', id: -15, xid: 456 } active:null
+  PRE test uid:4 handle:TCP context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:4 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:7 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:10 parent:null provider:ZLIB active:{ _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-21 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-22 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:7 len:2 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:7 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-23 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:7 len:2 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-24 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:4 handle:TCP context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:4 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:-21 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-21 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-21 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-21 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-21 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-22 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-22 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-22 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-22 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-22 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-23 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-23 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-23 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-23 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-23 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-24 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-24 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-24 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-24 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-24 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:4 handle:TCP context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:4 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:7 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-25 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:7 len:2 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:7 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-26 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:7 handle:HTTPParser context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:7 len:2 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-27 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:4 handle:TCP context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:4 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:-25 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-25 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-25 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-25 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-25 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-26 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-26 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-28 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-26 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-26 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-26 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-27 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-27 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-27 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-27 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-27 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:-28 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-28 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-28 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-28 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-28 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:10 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:10 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-29 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:10 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:10 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:-29 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-29 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-29 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-29 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-29 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:10 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:10 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-30 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:10 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:10 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:-30 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-30 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:-30 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:-30 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+ DESTROY test uid:-30 context:{ _ns_name: 'test', id: '', xid: 123 } active:null
+  PRE test uid:10 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:10 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-31 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+  POST test uid:10 handle:Zlib context:{ _ns_name: 'test', id: '', xid: 123 }
+   EXIT test uid:10 len:1 context: { _ns_name: 'test', id: '', xid: 123 }
+  PRE test uid:-31 handle:NextTickWrap context:{ _ns_name: 'test', id: '', xid: 123 }
+   ENTER test uid:-31 len:0 context: { _ns_name: 'test', id: '', xid: 123 }
+ INIT test uid:-32 parent:null provider:NONE active:{ _ns_name: 'test', id: '', xid: 123 }
+ http get status 200
+     GETTING KEY:xid=123 test uid:-32 active:{ _ns_name: 'test', id: '', xid: 123 }
+ returned from action xid value 123 expected 456
+     GETTING KEY:xid=123 test uid:-32 active:{ _ns_name: 'test', id: '', xid: 123 }
+
+assert.js:90
+  throw new assert.AssertionError({
+  ^
+ AssertionError: 123 == 456    

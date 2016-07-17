@@ -1,6 +1,8 @@
 {
   "env" : {
-    "node" : true
+    "node" : true,
+    "mocha": true,
+    "es6": true
   },
   "rules" : {
     "curly" : 0,
@@ -11,7 +13,6 @@
     "no-use-before-define" : [2, "nofunc"],
     "quotes" : 0,
     "semi" : [2, "always"],
-    "space-after-keywords" : 1,
     "space-infix-ops" : 0,
     "strict" : 0,
     "max-len" : [1, 90, 2]

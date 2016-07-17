@@ -1,0 +1,241 @@
+CREATING NAMESPACE ONE
+ CREATING NAMESPACE TWO
+
+INIT ONE uid:-1 parent:null provider:NONE active:null
+ INIT TWO uid:-1 parent:null provider:NONE active:null
+
+INIT ONE uid:-2 parent:null provider:NONE active:null
+ INIT TWO uid:-2 parent:null provider:NONE active:null
+ INIT ONE uid:4 parent:null provider:SIGNALWRAP active:null
+ INIT TWO uid:4 parent:null provider:SIGNALWRAP active:null
+  PRE MISSING CONTEXT ONE uid:-1 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-1 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-1 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-1 handle:NextTickWrap
+ DESTROY ONE uid:-1 context:undefined active:null
+ DESTROY TWO uid:-1 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-2 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-2 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-2 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-2 handle:NextTickWrap
+ DESTROY ONE uid:-2 context:undefined active:null
+ DESTROY TWO uid:-2 context:undefined active:null
+   multiple namespaces handles them correctly
+INIT ONE uid:-3 parent:null provider:NONE active:null
+ INIT TWO uid:-3 parent:null provider:NONE active:null
+  PRE MISSING CONTEXT ONE uid:-3 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-3 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-3 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-3 handle:NextTickWrap
+ DESTROY ONE uid:-3 context:undefined active:null
+ DESTROY TWO uid:-3 context:undefined active:null
+    CREATING Context: ONE 0  active:null
+    CREATED Context: ONE 0  context:{ _ns_name: 'ONE', id: -3 }
+   ENTER 0 ONE uid:-3 context: { _ns_name: 'ONE', id: -3 }
+  BEFORE RUN: ONE 1 { _ns_name: 'ONE', id: -3 }
+    CREATING Context: TWO 0  active:null
+    CREATED Context: TWO 0  context:{ _ns_name: 'TWO', id: -3 }
+   ENTER 0 TWO uid:-3 context: { _ns_name: 'TWO', id: -3 }
+  BEFORE RUN: TWO 1 { _ns_name: 'TWO', id: -3 }
+     SETTING KEY:name=tom1 in ns:ONE uid:-3 active:{ _ns_name: 'ONE', id: -3 }
+     SETTING KEY:name=paul2 in ns:TWO uid:-3 active:{ _ns_name: 'TWO', id: -3 }
+ INIT ONE uid:-4 parent:null provider:NONE active:{ _ns_name: 'ONE', id: -3, name: 'tom1' }
+ INIT TWO uid:-4 parent:null provider:NONE active:{ _ns_name: 'TWO', id: -3, name: 'paul2' }
+  AFTER RUN: TWO 1 { _ns_name: 'TWO', id: -3, name: 'paul2' }
+   EXIT 1 TWO uid:-4 context: { _ns_name: 'TWO', id: -3, name: 'paul2' }
+  AFTER RUN: ONE 1 { _ns_name: 'ONE', id: -3, name: 'tom1' }
+   EXIT 1 ONE uid:-4 context: { _ns_name: 'ONE', id: -3, name: 'tom1' }
+  PRE ONE uid:-4 handle:TimeoutWrap context:{ _ns_name: 'ONE', id: -3, name: 'tom1' }
+   ENTER 0 ONE uid:-4 context: { _ns_name: 'ONE', id: -3, name: 'tom1' }
+  PRE TWO uid:-4 handle:TimeoutWrap context:{ _ns_name: 'TWO', id: -3, name: 'paul2' }
+   ENTER 0 TWO uid:-4 context: { _ns_name: 'TWO', id: -3, name: 'paul2' }
+    CREATING Context: ONE 1  active:{ _ns_name: 'ONE', id: -3, name: 'tom1' }
+    CREATED Context: ONE 1  context:{ _ns_name: 'ONE', id: -4 }
+   ENTER 1 ONE uid:-4 context: { _ns_name: 'ONE', id: -4 }
+  BEFORE RUN: ONE 2 { _ns_name: 'ONE', id: -4 }
+ INIT ONE uid:-5 parent:null provider:NONE active:{ _ns_name: 'ONE', id: -4 }
+ INIT TWO uid:-5 parent:null provider:NONE active:{ _ns_name: 'TWO', id: -3, name: 'paul2' }
+  AFTER RUN: ONE 2 { _ns_name: 'ONE', id: -4 }
+   EXIT 2 ONE uid:-5 context: { _ns_name: 'ONE', id: -4 }
+  POST ONE uid:-4 handle:TimeoutWrap context:{ _ns_name: 'ONE', id: -3, name: 'tom1' }
+   EXIT 1 ONE uid:-4 context: { _ns_name: 'ONE', id: -3, name: 'tom1' }
+  POST TWO uid:-4 handle:TimeoutWrap context:{ _ns_name: 'TWO', id: -3, name: 'paul2' }
+   EXIT 1 TWO uid:-4 context: { _ns_name: 'TWO', id: -3, name: 'paul2' }
+ DESTROY ONE uid:-4 context:undefined active:null
+ DESTROY TWO uid:-4 context:undefined active:null
+  PRE ONE uid:-5 handle:NextTickWrap context:{ _ns_name: 'ONE', id: -4 }
+   ENTER 0 ONE uid:-5 context: { _ns_name: 'ONE', id: -4 }
+  PRE TWO uid:-5 handle:NextTickWrap context:{ _ns_name: 'TWO', id: -3, name: 'paul2' }
+   ENTER 0 TWO uid:-5 context: { _ns_name: 'TWO', id: -3, name: 'paul2' }
+     GETTING KEY:name=tom1 in ns:ONE uid:-5 active:{ _ns_name: 'ONE', id: -4 }
+     GETTING KEY:name=paul2 in ns:TWO uid:-5 active:{ _ns_name: 'TWO', id: -3, name: 'paul2' }
+     SETTING KEY:name=bob in ns:ONE uid:-5 active:{ _ns_name: 'ONE', id: -4 }
+     SETTING KEY:name=alice in ns:TWO uid:-5 active:{ _ns_name: 'TWO', id: -3, name: 'paul2' }
+ INIT ONE uid:-6 parent:null provider:NONE active:{ _ns_name: 'ONE', id: -4, name: 'bob' }
+ INIT TWO uid:-6 parent:null provider:NONE active:{ _ns_name: 'TWO', id: -3, name: 'alice' }
+  POST ONE uid:-5 handle:NextTickWrap context:{ _ns_name: 'ONE', id: -4, name: 'bob' }
+   EXIT 1 ONE uid:-5 context: { _ns_name: 'ONE', id: -4, name: 'bob' }
+  POST TWO uid:-5 handle:NextTickWrap context:{ _ns_name: 'TWO', id: -3, name: 'alice' }
+   EXIT 1 TWO uid:-5 context: { _ns_name: 'TWO', id: -3, name: 'alice' }
+ DESTROY ONE uid:-5 context:undefined active:null
+ DESTROY TWO uid:-5 context:undefined active:null
+  PRE ONE uid:-6 handle:TimeoutWrap context:{ _ns_name: 'ONE', id: -4, name: 'bob' }
+   ENTER 0 ONE uid:-6 context: { _ns_name: 'ONE', id: -4, name: 'bob' }
+  PRE TWO uid:-6 handle:TimeoutWrap context:{ _ns_name: 'TWO', id: -3, name: 'alice' }
+   ENTER 0 TWO uid:-6 context: { _ns_name: 'TWO', id: -3, name: 'alice' }
+     GETTING KEY:name=bob in ns:ONE uid:-6 active:{ _ns_name: 'ONE', id: -4, name: 'bob' }
+     GETTING KEY:name=alice in ns:TWO uid:-6 active:{ _ns_name: 'TWO', id: -3, name: 'alice' }
+  POST ONE uid:-6 handle:TimeoutWrap context:{ _ns_name: 'ONE', id: -4, name: 'bob' }
+   EXIT 1 ONE uid:-6 context: { _ns_name: 'ONE', id: -4, name: 'bob' }
+  POST TWO uid:-6 handle:TimeoutWrap context:{ _ns_name: 'TWO', id: -3, name: 'alice' }
+   EXIT 1 TWO uid:-6 context: { _ns_name: 'TWO', id: -3, name: 'alice' }
+ DESTROY ONE uid:-6 context:undefined active:null
+ DESTROY TWO uid:-6 context:undefined active:null
+ INIT ONE uid:-7 parent:null provider:NONE active:null
+ INIT TWO uid:-7 parent:null provider:NONE active:null
+INIT ONE uid:-8 parent:null provider:NONE active:null
+ INIT TWO uid:-8 parent:null provider:NONE active:null
+     √ name tom1
+INIT ONE uid:-9 parent:null provider:NONE active:null
+ INIT TWO uid:-9 parent:null provider:NONE active:null
+  PRE MISSING CONTEXT ONE uid:-7 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-7 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-7 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-7 handle:NextTickWrap
+ DESTROY ONE uid:-7 context:undefined active:null
+ DESTROY TWO uid:-7 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-8 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-8 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-8 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-8 handle:NextTickWrap
+ DESTROY ONE uid:-8 context:undefined active:null
+ DESTROY TWO uid:-8 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-9 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-9 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-9 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-9 handle:NextTickWrap
+ DESTROY ONE uid:-9 context:undefined active:null
+ DESTROY TWO uid:-9 context:undefined active:null
+ INIT ONE uid:-10 parent:null provider:NONE active:null
+ INIT TWO uid:-10 parent:null provider:NONE active:null
+INIT ONE uid:-11 parent:null provider:NONE active:null
+ INIT TWO uid:-11 parent:null provider:NONE active:null
+     √ name paul2
+INIT ONE uid:-12 parent:null provider:NONE active:null
+ INIT TWO uid:-12 parent:null provider:NONE active:null
+  PRE MISSING CONTEXT ONE uid:-10 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-10 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-10 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-10 handle:NextTickWrap
+ DESTROY ONE uid:-10 context:undefined active:null
+ DESTROY TWO uid:-10 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-11 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-11 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-11 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-11 handle:NextTickWrap
+ DESTROY ONE uid:-11 context:undefined active:null
+ DESTROY TWO uid:-11 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-12 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-12 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-12 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-12 handle:NextTickWrap
+ DESTROY ONE uid:-12 context:undefined active:null
+ DESTROY TWO uid:-12 context:undefined active:null
+ INIT ONE uid:-13 parent:null provider:NONE active:null
+ INIT TWO uid:-13 parent:null provider:NONE active:null
+INIT ONE uid:-14 parent:null provider:NONE active:null
+ INIT TWO uid:-14 parent:null provider:NONE active:null
+     √ name bob
+INIT ONE uid:-15 parent:null provider:NONE active:null
+ INIT TWO uid:-15 parent:null provider:NONE active:null
+  PRE MISSING CONTEXT ONE uid:-13 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-13 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-13 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-13 handle:NextTickWrap
+ DESTROY ONE uid:-13 context:undefined active:null
+ DESTROY TWO uid:-13 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-14 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-14 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-14 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-14 handle:NextTickWrap
+ DESTROY ONE uid:-14 context:undefined active:null
+ DESTROY TWO uid:-14 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-15 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-15 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-15 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-15 handle:NextTickWrap
+ DESTROY ONE uid:-15 context:undefined active:null
+ DESTROY TWO uid:-15 context:undefined active:null
+ INIT ONE uid:-16 parent:null provider:NONE active:null
+ INIT TWO uid:-16 parent:null provider:NONE active:null
+INIT ONE uid:-17 parent:null provider:NONE active:null
+ INIT TWO uid:-17 parent:null provider:NONE active:null
+     √ name alice
+INIT ONE uid:-18 parent:null provider:NONE active:null
+ INIT TWO uid:-18 parent:null provider:NONE active:null
+  PRE MISSING CONTEXT ONE uid:-16 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-16 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-16 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-16 handle:NextTickWrap
+ DESTROY ONE uid:-16 context:undefined active:null
+ DESTROY TWO uid:-16 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-17 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-17 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-17 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-17 handle:NextTickWrap
+ DESTROY ONE uid:-17 context:undefined active:null
+ DESTROY TWO uid:-17 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-18 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-18 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-18 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-18 handle:NextTickWrap
+ DESTROY ONE uid:-18 context:undefined active:null
+ DESTROY TWO uid:-18 context:undefined active:null
+
+INIT ONE uid:-19 parent:null provider:NONE active:null
+ INIT TWO uid:-19 parent:null provider:NONE active:null
+  PRE MISSING CONTEXT ONE uid:-19 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-19 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-19 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-19 handle:NextTickWrap
+ DESTROY ONE uid:-19 context:undefined active:null
+ DESTROY TWO uid:-19 context:undefined active:null
+
+INIT ONE uid:-20 parent:null provider:NONE active:null
+ INIT TWO uid:-20 parent:null provider:NONE active:null
+   4 passing (533ms)
+INIT ONE uid:-21 parent:null provider:NONE active:null
+ INIT TWO uid:-21 parent:null provider:NONE active:null
+
+INIT ONE uid:-22 parent:null provider:NONE active:null
+ INIT TWO uid:-22 parent:null provider:NONE active:null
+ INIT ONE uid:-23 parent:null provider:NONE active:null
+ INIT TWO uid:-23 parent:null provider:NONE active:null
+ INIT ONE uid:-24 parent:null provider:NONE active:null
+ INIT TWO uid:-24 parent:null provider:NONE active:null
+  PRE MISSING CONTEXT ONE uid:-20 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-20 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-20 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-20 handle:NextTickWrap
+ DESTROY ONE uid:-20 context:undefined active:null
+ DESTROY TWO uid:-20 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-21 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-21 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-21 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-21 handle:NextTickWrap
+ DESTROY ONE uid:-21 context:undefined active:null
+ DESTROY TWO uid:-21 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-22 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-22 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-22 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-22 handle:NextTickWrap
+ DESTROY ONE uid:-22 context:undefined active:null
+ DESTROY TWO uid:-22 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-23 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-23 handle:NextTickWrap
+  POST MISSING CONTEXT ONE uid:-23 handle:NextTickWrap
+  POST MISSING CONTEXT TWO uid:-23 handle:NextTickWrap
+ DESTROY ONE uid:-23 context:undefined active:null
+ DESTROY TWO uid:-23 context:undefined active:null
+  PRE MISSING CONTEXT ONE uid:-24 handle:NextTickWrap
+  PRE MISSING CONTEXT TWO uid:-24 handle:NextTickWrap

@@ -2,7 +2,7 @@
 
 var tap             = require('tap')
   , test            = tap.test
-  , createNamespace = require('../context.js').createNamespace
+  , createNamespace = require('../../context.js').createNamespace
   ;
 
 test("asynchronously propagating state with local-context-domains", function (t) {

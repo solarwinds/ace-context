@@ -1,5 +1,5 @@
 var test = require('tap').test
-  , cls  = require('../context.js')
+  , cls  = require('../../context.js')
   ;
 
 test("minimized test case that caused #6011 patch to fail", function (t) {
@@ -18,6 +18,7 @@ test("minimized test case that caused #6011 patch to fail", function (t) {
 
     process.nextTick(function () {
       t.ok(n.get('state'), "state should be visible");
+      //console.log(cls.trace);
     });
   });
 });

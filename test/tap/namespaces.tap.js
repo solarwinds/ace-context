@@ -3,7 +3,7 @@
 var tap = require('tap');
 var test = tap.test;
 
-var context = require('../context.js');
+var context = require('../../context.js');
 
 test("namespace management", function (t) {
   t.plan(8);

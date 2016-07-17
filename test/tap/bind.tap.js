@@ -6,7 +6,7 @@ var test = tap.test;
 var EventEmitter = require('events').EventEmitter;
 
 // module under test
-var context = require('../context.js');
+var context = require('../../context.js');
 
 // multiple contexts in use
 var tracer = context.createNamespace('tracer');
@@ -15,9 +15,12 @@ function Trace(harvester) {
   this.harvester = harvester;
 }
 
-Trace.prototype.runHandler = function (handler) {
-  var trace = tracer.run(handler);
-  this.harvester.emit('finished', trace.transaction);
+Trace.prototype.runHandler = function (callback) {
+  var wrapped = tracer.bind(function () {
+    callback();
+    this.harvester.emit('finished', tracer.get('transaction'));
+  }.bind(this));
+  wrapped();
 };
 
 
