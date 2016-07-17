@@ -1,11 +1,11 @@
 {
   "name": "cls-hooked",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "CLS using AsynWrap instead of async-listener - es6 only",
   "main": "context.js",
-  "directories": {
-    "test": "test"
-  },
+  "files": [
+    "context.js"
+  ],
   "scripts": {
     "test": "mocha test/*.js",
     "test-tap": "tap test/tap/*.tap.js"
@@ -17,9 +17,7 @@
   "keywords": [
     "threading",
     "shared",
-    "context",
-    "domains",
-    "logging"
+    "context"
   ],
   "author": "Forrest L Norvell <ogd@aoaioxxysz.net>",
   "contributors": [
