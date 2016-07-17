@@ -1,6 +1,6 @@
-[![NPM](https://nodei.co/npm/continuation-local-storage.png?downloads=true&stars=true)](https://nodei.co/npm/continuation-local-storage/)
+[![NPM](https://nodei.co/npm/cls-hooked.png?downloads=true&stars=true)](https://nodei.co/npm/cls-hooked/)
 
-# Continuation-Local Storage
+# Continuation-Local Storage ( Hooked )
 
 Continuation-local storage works like thread-local storage in threaded
 programming, but is based on chains of Node-style callbacks instead of threads.
@@ -15,7 +15,7 @@ before calling a function passed in by a user to continue execution:
 ```javascript
 // setup.js
 
-var createNamespace = require('continuation-local-storage').createNamespace;
+var createNamespace = require('cls-hooked').createNamespace;
 var session = createNamespace('my session');
 
 var db = require('./lib/db.js');
@@ -38,7 +38,7 @@ the value you set earlier:
 ```javascript
 // send_response.js
 
-var getNamespace = require('continuation-local-storage').getNamespace;
+var getNamespace = require('cls-hooked').getNamespace;
 var session = getNamespace('my session');
 
 var render = require('./lib/render.js')
@@ -74,7 +74,7 @@ overwriting the parent's.
 A simple, annotated example of how this nesting behaves:
 
 ```javascript
-var createNamespace = require('continuation-local-storage').createNamespace;
+var createNamespace = require('cls-hooked').createNamespace;
 
 var writer = createNamespace('writer');
 writer.run(function () {
@@ -243,7 +243,7 @@ A context is a plain object created using the enclosing context as its prototype
 
 # copyright & license
 
-See [LICENSE](https://github.com/othiym23/node-continuation-local-storage/blob/master/LICENSE)
+See [LICENSE](https://github.com/jeff-lewis/cls-hooked/blob/master/LICENSE)
 for the details of the BSD 2-clause "simplified" license used by
 `continuation-local-storage`. This package was developed in 2012-2013 (and is
 maintained now) by Forrest L Norvell, [@othiym23](https://github.com/othiym23),
