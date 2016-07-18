@@ -1,6 +1,6 @@
 'use strict';
 
-var createNamespace = require('../context.js').createNamespace
+var createNamespace = require('./../../context.js').createNamespace
   , fs              = require('fs')
   , path            = require('path')
   , exec            = require('child_process').exec

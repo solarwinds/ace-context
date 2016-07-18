@@ -3,7 +3,7 @@
 const test = require('tap').test;
 const util = require('util');
 
-const cls = require('../../context.js');
+const cls = require('./../../context.js');
 
 test("multiple namespaces handles them correctly", function(t) {
   t.plan(4);

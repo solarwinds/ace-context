@@ -104,7 +104,7 @@ Namespace.prototype.bind = function bind(fn, context) {
   }
 
   let self = this;
-  return function () {
+  return function() {
     self.enter(context);
     try {
       return fn.apply(this, arguments);
@@ -152,10 +152,6 @@ Namespace.prototype.exit = function exit(context) {
       debug2('??ERROR?? context exiting but not entered - ignoring: ' + util.inspect(context));
     }
     assert.ok(index >= 0, 'context not currently entered; can\'t exit. \n' + util.inspect(this) + '\n' + util.inspect(context));
-    /*let len = trace.length;
-     for (let i = 0; i < len; i++) {
-     console.log(trace[i]);
-     }*/
   } else {
     assert.ok(index, 'can\'t remove top context');
     this._set.splice(index, 1);
@@ -191,7 +187,7 @@ Namespace.prototype.bindEmitter = function bindEmitter(emitter) {
 
     let wrapped = unwrapped;
     let unwrappedContexts = unwrapped[CONTEXTS_SYMBOL];
-    Object.keys(unwrappedContexts).forEach(function (name) {
+    Object.keys(unwrappedContexts).forEach(function(name) {
       let thunk = unwrappedContexts[name];
       wrapped = thunk.namespace.bind(wrapped, thunk.context);
     });
@@ -306,7 +302,7 @@ function destroyNamespace(name) {
 function reset() {
   // must unregister async listeners
   if (process.namespaces) {
-    Object.keys(process.namespaces).forEach(function (name) {
+    Object.keys(process.namespaces).forEach(function(name) {
       destroyNamespace(name);
     });
   }
@@ -327,12 +323,12 @@ function debug2(msg) {
 
 
 /*function debug(from, ns) {
-  process._rawDebug('DEBUG: ' + util.inspect({
-      from: from,
-      currentUid: currentUid,
-      context: ns ? ns._contexts.get(currentUid) : 'no ns'
-    }, true, 2, true));
-}*/
+ process._rawDebug('DEBUG: ' + util.inspect({
+ from: from,
+ currentUid: currentUid,
+ context: ns ? ns._contexts.get(currentUid) : 'no ns'
+ }, true, 2, true));
+ }*/
 
 
 module.exports = {
