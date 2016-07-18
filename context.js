@@ -93,7 +93,7 @@ Namespace.prototype.run = function run(fn) {
   }
 };
 
-Namespace.prototype.bind = function bind(fn, context) {
+Namespace.prototype.bind = function bindFactory(fn, context) {
   if (!context) {
     if (!this.active) {
       context = this.createContext();
@@ -104,7 +104,7 @@ Namespace.prototype.bind = function bind(fn, context) {
   }
 
   let self = this;
-  return function() {
+  return function clsBind() {
     self.enter(context);
     try {
       return fn.apply(this, arguments);
