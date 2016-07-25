@@ -19,6 +19,15 @@ const DEBUG_CLS_HOOKED = process.env.DEBUG_CLS_HOOKED;
 
 let currentUid = -1;
 
+module.exports = {
+  getNamespace: getNamespace,
+  createNamespace: createNamespace,
+  destroyNamespace: destroyNamespace,
+  reset: reset,
+  //trace: trace,
+  ERROR_SYMBOL: ERROR_SYMBOL
+};
+
 function Namespace(name) {
   this.name = name;
   // changed in 2.7: no default context
@@ -222,12 +231,15 @@ function createNamespace(name) {
 
   asyncHook.addHooks({
     init(uid, handle, provider, parentUid, parentHandle) {
-      //currentUid = parentUid || uid;  // Suggested usage but appears to work better for tracing modules.
+      //parentUid = parentUid || currentUid;  // Suggested usage but appears to work better for tracing modules.
       currentUid = uid;
 
       //CHAIN Parent's Context onto child if none exists. This is needed to pass net-events.spec
       if (parentUid) {
         namespace._contexts.set(uid, namespace._contexts.get(parentUid));
+        if (DEBUG_CLS_HOOKED) {
+          debug2('PARENTID: ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
+        }
       } else {
         namespace._contexts.set(currentUid, namespace.active);
       }
@@ -235,12 +247,6 @@ function createNamespace(name) {
       if (DEBUG_CLS_HOOKED) {
         debug2('INIT ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + invertedProviders[provider]
           + ' active:' + util.inspect(namespace.active, true));
-      }
-
-      if (parentUid) {
-        if (DEBUG_CLS_HOOKED) {
-          debug2('PARENTID: ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
-        }
       }
 
     },
@@ -330,15 +336,6 @@ function debug2(msg) {
  }, true, 2, true));
  }*/
 
-
-module.exports = {
-  getNamespace: getNamespace,
-  createNamespace: createNamespace,
-  destroyNamespace: destroyNamespace,
-  reset: reset,
-  //trace: trace,
-  ERROR_SYMBOL: ERROR_SYMBOL
-};
 
 function getFunctionName(fn) {
   if (!fn) {
