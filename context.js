@@ -19,6 +19,15 @@ const DEBUG_CLS_HOOKED = process.env.DEBUG_CLS_HOOKED;
 
 let currentUid = -1;
 
+module.exports = {
+  getNamespace: getNamespace,
+  createNamespace: createNamespace,
+  destroyNamespace: destroyNamespace,
+  reset: reset,
+  //trace: trace,
+  ERROR_SYMBOL: ERROR_SYMBOL
+};
+
 function Namespace(name) {
   this.name = name;
   // changed in 2.7: no default context
@@ -93,7 +102,15 @@ Namespace.prototype.run = function run(fn) {
   }
 };
 
-Namespace.prototype.bind = function bind(fn, context) {
+Namespace.prototype.runAndReturn = function (fn) {
+  var value;
+  this.run(function (context) {
+    value = fn(context);
+  });
+  return value;
+};
+
+Namespace.prototype.bind = function bindFactory(fn, context) {
   if (!context) {
     if (!this.active) {
       context = this.createContext();
@@ -104,7 +121,7 @@ Namespace.prototype.bind = function bind(fn, context) {
   }
 
   let self = this;
-  return function () {
+  return function clsBind() {
     self.enter(context);
     try {
       return fn.apply(this, arguments);
@@ -152,10 +169,6 @@ Namespace.prototype.exit = function exit(context) {
       debug2('??ERROR?? context exiting but not entered - ignoring: ' + util.inspect(context));
     }
     assert.ok(index >= 0, 'context not currently entered; can\'t exit. \n' + util.inspect(this) + '\n' + util.inspect(context));
-    /*let len = trace.length;
-     for (let i = 0; i < len; i++) {
-     console.log(trace[i]);
-     }*/
   } else {
     assert.ok(index, 'can\'t remove top context');
     this._set.splice(index, 1);
@@ -191,7 +204,7 @@ Namespace.prototype.bindEmitter = function bindEmitter(emitter) {
 
     let wrapped = unwrapped;
     let unwrappedContexts = unwrapped[CONTEXTS_SYMBOL];
-    Object.keys(unwrappedContexts).forEach(function (name) {
+    Object.keys(unwrappedContexts).forEach(function(name) {
       let thunk = unwrappedContexts[name];
       wrapped = thunk.namespace.bind(wrapped, thunk.context);
     });
@@ -226,12 +239,15 @@ function createNamespace(name) {
 
   asyncHook.addHooks({
     init(uid, handle, provider, parentUid, parentHandle) {
-      //currentUid = parentUid || uid;  // Suggested usage but appears to work better for tracing modules.
+      //parentUid = parentUid || currentUid;  // Suggested usage but appears to work better for tracing modules.
       currentUid = uid;
 
       //CHAIN Parent's Context onto child if none exists. This is needed to pass net-events.spec
       if (parentUid) {
         namespace._contexts.set(uid, namespace._contexts.get(parentUid));
+        if (DEBUG_CLS_HOOKED) {
+          debug2('PARENTID: ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
+        }
       } else {
         namespace._contexts.set(currentUid, namespace.active);
       }
@@ -239,12 +255,6 @@ function createNamespace(name) {
       if (DEBUG_CLS_HOOKED) {
         debug2('INIT ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + invertedProviders[provider]
           + ' active:' + util.inspect(namespace.active, true));
-      }
-
-      if (parentUid) {
-        if (DEBUG_CLS_HOOKED) {
-          debug2('PARENTID: ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
-        }
       }
 
     },
@@ -306,7 +316,7 @@ function destroyNamespace(name) {
 function reset() {
   // must unregister async listeners
   if (process.namespaces) {
-    Object.keys(process.namespaces).forEach(function (name) {
+    Object.keys(process.namespaces).forEach(function(name) {
       destroyNamespace(name);
     });
   }
@@ -327,22 +337,13 @@ function debug2(msg) {
 
 
 /*function debug(from, ns) {
-  process._rawDebug('DEBUG: ' + util.inspect({
-      from: from,
-      currentUid: currentUid,
-      context: ns ? ns._contexts.get(currentUid) : 'no ns'
-    }, true, 2, true));
-}*/
+ process._rawDebug('DEBUG: ' + util.inspect({
+ from: from,
+ currentUid: currentUid,
+ context: ns ? ns._contexts.get(currentUid) : 'no ns'
+ }, true, 2, true));
+ }*/
 
-
-module.exports = {
-  getNamespace: getNamespace,
-  createNamespace: createNamespace,
-  destroyNamespace: destroyNamespace,
-  reset: reset,
-  //trace: trace,
-  ERROR_SYMBOL: ERROR_SYMBOL
-};
 
 function getFunctionName(fn) {
   if (!fn) {

@@ -1,6 +1,12 @@
-[![NPM](https://nodei.co/npm/cls-hooked.png?downloads=true&stars=true)](https://nodei.co/npm/cls-hooked/)
+[![NPM](https://nodei.co/npm/cls-hooked.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cls-hooked/)
+
+[![Build Status](https://travis-ci.org/Jeff-Lewis/cls-hooked.svg?branch=master)](https://travis-ci.org/Jeff-Lewis/cls-hooked)
 
 # Continuation-Local Storage ( Hooked )
+
+### This is a fork of [CLS](https://github.com/othiym23/node-continuation-local-storage) using [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) instead of [async-listener](https://github.com/othiym23/async-listener). ###
+
+#### Thanks to [@trevnorris](https://github.com/trevnorris) for [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) and all the async work in Node and [@AndreasMadsen](https://github.com/AndreasMadsen) for [async-hook](https://github.com/AndreasMadsen/async-hook). ###
 
 Continuation-local storage works like thread-local storage in threaded
 programming, but is based on chains of Node-style callbacks instead of threads.
@@ -185,6 +191,19 @@ that are called (either directly, or indirectly through asynchronous functions
 that take callbacks themselves) from the provided callback within the scope of
 that namespace. The new context is passed as an argument to the callback
 when it's called.
+
+### namespace.runAndReturn(callback)
+
+* return: the return value of the callback
+
+Create a new context on which values can be set or read. Run all the functions
+that are called (either directly, or indirectly through asynchronous functions
+that take callbacks themselves) from the provided callback within the scope of
+that namespace. The new context is passed as an argument to the callback
+when it's called.
+
+Same as `namespace.run()` but returns the return value of the callback rather
+than the context.
 
 ### namespace.bind(callback, [context])
 

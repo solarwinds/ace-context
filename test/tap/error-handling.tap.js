@@ -85,7 +85,7 @@ test("synchronous throw checks if error exists", function (t) {
 test("throw in process.nextTick attaches the context", function (t) {
   t.plan(3);
 
-  var namespace = cls.createNamespace('cls@nexttick');
+  var namespace = cls.createNamespace('cls@nexttick2');
 
   var d = domain.create();
   d.once('error', function (e) {
@@ -93,7 +93,7 @@ test("throw in process.nextTick attaches the context", function (t) {
     t.equal(namespace.fromException(e)['value'], 'transaction set',
             "found the inner value");
 
-    cls.destroyNamespace('cls@nexttick');
+    cls.destroyNamespace('cls@nexttick2');
   });
 
   namespace.run(function () {
@@ -103,7 +103,7 @@ test("throw in process.nextTick attaches the context", function (t) {
     process.nextTick(d.bind(function () {
       namespace.run(function () {
         namespace.set('value', 'transaction set');
-        throw new Error("cls@nexttick explosion");
+        throw new Error("cls@nexttick2 explosion");
       });
     }));
 
@@ -114,7 +114,7 @@ test("throw in process.nextTick attaches the context", function (t) {
 test("throw in setTimeout attaches the context", function (t) {
   t.plan(3);
 
-  var namespace = cls.createNamespace('cls@nexttick');
+  var namespace = cls.createNamespace('cls@nexttick3');
   var d = domain.create();
 
   d.once('error', function (e) {
@@ -122,7 +122,7 @@ test("throw in setTimeout attaches the context", function (t) {
     t.equal(namespace.fromException(e)['value'], 'transaction set',
             "found the inner value");
 
-    cls.destroyNamespace('cls@nexttick');
+    cls.destroyNamespace('cls@nexttick3');
   });
 
   namespace.run(function () {
@@ -132,7 +132,7 @@ test("throw in setTimeout attaches the context", function (t) {
     setTimeout(d.bind(function () {
       namespace.run(function () {
         namespace.set('value', 'transaction set');
-        throw new Error("cls@nexttick explosion");
+        throw new Error("cls@nexttick3 explosion");
       });
     }));
 
