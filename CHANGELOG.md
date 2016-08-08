@@ -1,15 +1,24 @@
+
+### v4.1.0
+*  Feature: add `runAndReturn` method to get return value of `func` (from ). 
+
+
+### v4.0.1
+*  Same API but major change to implementation. Uses **unofficial** [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) instead of [async-listener](https://github.com/othiym23/async-listener). 
+
+
 ### v3.1.0 (2014-07-28):
 
 * Updated to use `async-listener@0.4.7` to pick up bug fixes.
 
 ### v3.0.0 (2013-12-14):
 
-* Removed the notion of a "default" or "global" context per namespace. It only
-  existed to create a simpler interface for developing and testing the module,
-  and created the potential for nasty information disclosure bugs (see [issue
-  #14](https://github.com/othiym23/node-continuation-local-storage/issues/14)
-  for details). This is potentially a breaking change, if you're depending on
-  the global context, so semver says we have to bump the major version.
+* Removed the notion of a "default" or "global" context per namespace. 
+  It only existed to create a simpler interface for developing and testing the module,
+  and created the potential for nasty information disclosure bugs 
+  (see [issue #14](https://github.com/othiym23/node-continuation-local-storage/issues/14)
+  for details). This is potentially a breaking change, if you're depending on the global context, 
+  so semver says we have to bump the major version.
 * Added this changelog.
 
 ### v2.6.2 (2013-12-07):
@@ -18,8 +27,8 @@
 
 ### v2.6.1 (2013-11-29):
 
-* `emitter-listener` has been extracted from `shimmer` into a standalone
-  module for `namespace.bindEmitter()`.
+* `emitter-listener` has been extracted from `shimmer` into a standalone module 
+  for `namespace.bindEmitter()`.
 
 ### v2.6.0 (2013-11-27):
 
