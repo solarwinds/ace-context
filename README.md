@@ -1,6 +1,6 @@
-[![NPM](https://nodei.co/npm/cls-hooked.png?downloads=true&stars=true)](https://nodei.co/npm/cls-hooked/)
+[![NPM](https://nodei.co/npm/cls-hooked.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cls-hooked/)
 
-[![travis-ci Build Status](https://travis-ci.org/Jeff-Lewis/cls-hooked.svg?branch=master)](https://travis-ci.org/Jeff-Lewis/cls-hooked)
+[![Build Status](https://travis-ci.org/Jeff-Lewis/cls-hooked.svg?branch=master)](https://travis-ci.org/Jeff-Lewis/cls-hooked)
 
 # Continuation-Local Storage ( Hooked )
 
