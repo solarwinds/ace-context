@@ -1,4 +1,7 @@
 ### v4.1.1
+*  republishing to npm v4.1.2
+
+### v4.1.1
 *  Updated travis and strict npm engine to ^6.2.2 
 
 ### v4.1.0

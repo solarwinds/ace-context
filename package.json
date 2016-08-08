@@ -1,6 +1,6 @@
 {
   "name": "cls-hooked",
-  "version": "4.1.1",
+  "version": "4.1.2",
   "description": "CLS using AsynWrap instead of async-listener - es6 only",
   "main": "context.js",
   "files": [
