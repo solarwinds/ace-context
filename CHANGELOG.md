@@ -1,6 +1,8 @@
+### v4.1.1
+*  Updated travis and strict npm engine to ^6.2.2 
 
 ### v4.1.0
-*  Feature: add `runAndReturn` method to get return value of `func` (from ). 
+*  Feature: add `runAndReturn` method to get return value of `func` (from [@overlookmotel](https://github.com/overlookmotel/node-continuation-local-storage)). 
 
 
 ### v4.0.1
