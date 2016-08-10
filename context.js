@@ -102,12 +102,40 @@ Namespace.prototype.run = function run(fn) {
   }
 };
 
-Namespace.prototype.runAndReturn = function (fn) {
+Namespace.prototype.runAndReturn = function runAndReturn(fn) {
   var value;
   this.run(function (context) {
     value = fn(context);
   });
   return value;
+};
+
+/**
+ * Uses global Promise and assumes Promise is cls friendly or wrapped already.
+ * @param {function} fn
+ * @returns {*}
+ */
+Namespace.prototype.runPromise = function runPromise(fn) {
+  let context = this.createContext();
+  this.enter(context);
+  try {
+    if (DEBUG_CLS_HOOKED) {
+      debug2(' BEFORE runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
+    }
+    return fn(context);
+  }
+  catch (exception) {
+    if (exception) {
+      exception[ERROR_SYMBOL] = context;
+    }
+    throw exception;
+  }
+  finally {
+    if (DEBUG_CLS_HOOKED) {
+      debug2(' AFTER runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
+    }
+    this.exit(context);
+  }
 };
 
 Namespace.prototype.bind = function bindFactory(fn, context) {
