@@ -118,24 +118,32 @@ Namespace.prototype.runAndReturn = function runAndReturn(fn) {
 Namespace.prototype.runPromise = function runPromise(fn) {
   let context = this.createContext();
   this.enter(context);
-  try {
-    if (DEBUG_CLS_HOOKED) {
-      debug2(' BEFORE runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
-    }
-    return fn(context);
+
+  let promise = fn(context);
+  if(!promise || !promise.then || !promise.catch){
+    throw new Error('fn must return a promise.');
   }
-  catch (exception) {
-    if (exception) {
+
+  if (DEBUG_CLS_HOOKED) {
+    debug2(' BEFORE runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
+  }
+
+  return promise
+    .then(result =>{
+      if (DEBUG_CLS_HOOKED) {
+        debug2(' AFTER runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
+      }
+      this.exit(context);
+      return result;
+    })
+    .catch(err => {
       exception[ERROR_SYMBOL] = context;
-    }
-    throw exception;
-  }
-  finally {
-    if (DEBUG_CLS_HOOKED) {
-      debug2(' AFTER runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
-    }
-    this.exit(context);
-  }
+      if (DEBUG_CLS_HOOKED) {
+        debug2(' AFTER runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
+      }
+      this.exit(context);
+      throw err;
+    });
 };
 
 Namespace.prototype.bind = function bindFactory(fn, context) {
