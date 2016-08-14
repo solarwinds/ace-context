@@ -1,20 +1,25 @@
-### v4.1.1
-*  republishing to npm v4.1.2
+### v4.1.3 
+*   updated dependencies. Fix eslint issues
+*   add runPromise
+
+### v4.1.2
+*   republishing to npm v4.1.2
+*   Update travis and strict npm engine to ^6.2.2
 
 ### v4.1.1
-*  Updated travis and strict npm engine to ^6.2.2 
+*   Updated travis and strict npm engine to ^6.2.2 
 
 ### v4.1.0
-*  Feature: add `runAndReturn` method to get return value of `func` (from [@overlookmotel](https://github.com/overlookmotel/node-continuation-local-storage)). 
+*   Feature: add `runAndReturn` method to get return value of `func` (from [@overlookmotel](https://github.com/overlookmotel/node-continuation-local-storage)). 
 
 
 ### v4.0.1
-*  Same API but major change to implementation. Uses **unofficial** [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) instead of [async-listener](https://github.com/othiym23/async-listener). 
+*   Same API but major change to implementation. Uses **unofficial** [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) instead of [async-listener](https://github.com/othiym23/async-listener). 
 
 
 ### v3.1.0 (2014-07-28):
 
-* Updated to use `async-listener@0.4.7` to pick up bug fixes.
+*   Updated to use `async-listener@0.4.7` to pick up bug fixes.
 
 ### v3.0.0 (2013-12-14):
 
