@@ -1,3 +1,7 @@
+### v4.1.4 
+*   supports node 4.5.0 now
+*   chore(ci): add node 4 to travis
+
 ### v4.1.3 
 *   updated dependencies. Fix eslint issues
 *   add runPromise
