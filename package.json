@@ -28,7 +28,7 @@
   "license": "BSD-2-Clause",
   "engineStrict": true,
   "engines": {
-    "node": "^6.2.2"
+    "node": ">=4.5.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
