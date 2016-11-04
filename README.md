@@ -6,7 +6,7 @@
 
 ### This is a fork of [CLS](https://github.com/othiym23/node-continuation-local-storage) using [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) instead of [async-listener](https://github.com/othiym23/async-listener). ###
 
-#### Thanks to [@trevnorris](https://github.com/trevnorris) for [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) and all the async work in Node and [@AndreasMadsen](https://github.com/AndreasMadsen) for [async-hook](https://github.com/AndreasMadsen/async-hook). ###
+**This module uses AsyncWrap which is an undocumented API, so please consider the risk before using it.** _Thanks to [@trevnorris](https://github.com/trevnorris) for [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) and all the async work in Node and [@AndreasMadsen](https://github.com/AndreasMadsen) for [async-hook](https://github.com/AndreasMadsen/async-hook)._
 
 Continuation-local storage works like thread-local storage in threaded
 programming, but is based on chains of Node-style callbacks instead of threads.
