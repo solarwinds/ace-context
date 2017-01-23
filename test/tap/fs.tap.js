@@ -893,7 +893,7 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
 
         setTimeout(function poke() {
           fs.appendFileSync(FILENAME, 'still a test');
-        }, 20);
+        }, 100);
       });
     });
   });

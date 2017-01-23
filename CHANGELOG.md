@@ -1,3 +1,8 @@
+### v4.1.5
+* dep: update engine support ^4.7||^6.9.2||^7.3 to be same as `async-hook`'s 
+* dep: update `async-hook` to 1.7.1
+* test: give `fs.watchFile` a little more time to pass on Travis CI
+
 ### v4.1.4 
 *   supports node 4.5.0 now
 *   chore(ci): add node 4 to travis
