@@ -146,7 +146,7 @@ Namespace.prototype.runPromise = function runPromise(fn) {
       return result;
     })
     .catch(err => {
-      exception[ERROR_SYMBOL] = context;
+      err[ERROR_SYMBOL] = context;
       if (DEBUG_CLS_HOOKED) {
         debug2(' AFTER runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' +
           util.inspect(context));
