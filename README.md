@@ -4,10 +4,21 @@
 
 # Continuation-Local Storage ( Hooked )
 
-### This is a fork of [CLS](https://github.com/othiym23/node-continuation-local-storage) using [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) instead of [async-listener](https://github.com/othiym23/async-listener). ###
+## This module uses AsyncWrap which is an undocumented API, so please consider the risk before using it
 
-**This module uses AsyncWrap which is an undocumented API, so please consider the risk before using it.** _Thanks to [@trevnorris](https://github.com/trevnorris) for [AsyncWrap](https://github.com/nodejs/node-eps/blob/master/006-asynchooks-api.md) and all the async work in Node and [@AndreasMadsen](https://github.com/AndreasMadsen) for [async-hook](https://github.com/AndreasMadsen/async-hook)._
+### This is a fork of [CLS](https://github.com/othiym23/node-continuation-local-storage) using [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) instead of [async-listener](https://github.com/othiym23/async-listener)
 
+### Thanks to [@trevnorris](https://github.com/trevnorris) for [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) and all the async work in Node and [@AndreasMadsen](https://github.com/AndreasMadsen) for [async-hook](https://github.com/AndreasMadsen/async-hook)
+
+### A little history of "AsyncWrap/AsyncHook" and its incarnations
+
+1. First implementation was called **[AsyncListener](https://github.com/nodejs/node-v0.x-archive/pull/6011)** in node v0.11 but was [removed from core](https://github.com/nodejs/node-v0.x-archive/pull/8110) prior to Nodejs v0.12
+2. Second implementation called **[AsyncWrap, async-wrap or async_wrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md)** was included to Nodejs v0.12.
+    - `AsyncWrap` is unofficial and undocumented but is currently in Nodejs versions 6 & 7
+    - `cls-hooked` currently uses `AsyncWrap`
+3. Third implementation and [offically Node-eps accepted](https://github.com/nodejs/node-eps/blob/master/006-asynchooks-api.md) **AsyncHook API** was recently merged into Nodejs's core master branch and is expected to be in Nodejs 8. :)
+
+---
 Continuation-local storage works like thread-local storage in threaded
 programming, but is based on chains of Node-style callbacks instead of threads.
 The standard Node convention of functions calling functions is very similar to

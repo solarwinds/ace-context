@@ -1,34 +1,47 @@
-### v4.1.5
-* dep: update engine support ^4.7||^6.9.2||^7.3 to be same as `async-hook`'s 
+# `cls-hooked` Changelog
+
+## v4.1.6
+
+* fix: Use the correct `err` variable name in try/catch. Thanks to [@enko](https://github.com/enko).
+
+## v4.1.5
+
+* dep: update engine support ^4.7||^6.9.2||^7.3 to be same as `async-hook`'s
 * dep: update `async-hook` to 1.7.1
 * test: give `fs.watchFile` a little more time to pass on Travis CI
 
-### v4.1.4 
-*   supports node 4.5.0 now
-*   chore(ci): add node 4 to travis
+## v4.1.4
 
-### v4.1.3 
-*   updated dependencies. Fix eslint issues
-*   add runPromise
+* feat: supports node 4.5.0 now
+* test: add node 4 to travis
 
-### v4.1.2
-*   republishing to npm v4.1.2
-*   Update travis and strict npm engine to ^6.2.2
+## v4.1.3
 
-### v4.1.1
-*   Updated travis and strict npm engine to ^6.2.2 
+* dep: updated dependencies. Fix eslint issues
+* feat: add runPromise
 
-### v4.1.0
-*   Feature: add `runAndReturn` method to get return value of `func` (from [@overlookmotel](https://github.com/overlookmotel/node-continuation-local-storage)). 
+## v4.1.2
+
+* chore: republishing to npm v4.1.2
+* test: Update travis and strict npm engine to ^6.2.2
+
+## v4.1.1
+
+* test: Updated travis and strict npm engine to ^6.2.2
+
+## v4.1.0
+
+* feat: add `runAndReturn` method to get return value of `func` (from [@overlookmotel](https://github.com/overlookmotel/node-continuation-local-storage)). 
 
 
-### v4.0.1
-*   Same API but major change to implementation. Uses **unofficial** [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) instead of [async-listener](https://github.com/othiym23/async-listener). 
+## v4.0.1
+
+* feat: Same API but major change to implementation. Uses **unofficial** [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) instead of [async-listener](https://github.com/othiym23/async-listener). 
 
 
 ### v3.1.0 (2014-07-28):
 
-*   Updated to use `async-listener@0.4.7` to pick up bug fixes.
+* Updated to use `async-listener@0.4.7` to pick up bug fixes.
 
 ### v3.0.0 (2013-12-14):
 
