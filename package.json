@@ -1,6 +1,6 @@
 {
   "name": "cls-hooked",
-  "version": "4.1.7",
+  "version": "5.0.0-alpha.1",
   "description": "CLS using AsynWrap instead of async-listener - Node >= 4.7.0",
   "main": "context.js",
   "files": [
@@ -8,7 +8,9 @@
   ],
   "scripts": {
     "test": "mocha test/*.js & tap test/tap/*.tap.js",
-    "test-tap": "tap test/tap/*.tap.js"
+    "test-mocha": "mocha test/*.js & tap test/tap/*.tap.js",
+    "test-tap": "tap test/tap/*.tap.js",
+    "debug": "node --nolazy --debug-brk=5858 "
   },
   "repository": {
     "type": "git",
@@ -28,10 +30,10 @@
   "license": "BSD-2-Clause",
   "engineStrict": true,
   "engines": {
-    "node": "^4.7 || >=6.9 || >=7.3"
+    "node": "^4.7 || ^6.9.2 || ^7.3"
   },
   "dependencies": {
-    "async-hook-jl": "^1.7.5",
+    "async-hook": "^1.7.1",
     "emitter-listener": "^1.0.1"
   },
   "devDependencies": {

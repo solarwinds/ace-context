@@ -11,9 +11,9 @@ const context = require('../context.js');
  */
 describe('Promise context convention', () => {
 
-  var promise;
-  var ns = context.createNamespace('PromiseConventionNS');
-  var conventionId = 0;
+  let promise;
+  let ns = context.createNamespace('PromiseConventionNS');
+  let conventionId = 0;
 
   before(() => {
     ns.run(() => {

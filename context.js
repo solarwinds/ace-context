@@ -1,19 +1,13 @@
 'use strict';
 
+const fs = require('fs');
 const util = require('util');
 const assert = require('assert');
 const wrapEmitter = require('emitter-listener');
-const asyncHook = require('async-hook-jl');
+const async_hooks = require('async_hooks');
 
 const CONTEXTS_SYMBOL = 'cls@contexts';
 const ERROR_SYMBOL = 'error@context';
-
-//const trace = [];
-
-const invertedProviders = [];
-for (let key in asyncHook.providers) {
-  invertedProviders[asyncHook.providers[key]] = key;
-}
 
 const DEBUG_CLS_HOOKED = process.env.DEBUG_CLS_HOOKED;
 
@@ -24,7 +18,6 @@ module.exports = {
   createNamespace: createNamespace,
   destroyNamespace: destroyNamespace,
   reset: reset,
-  //trace: trace,
   ERROR_SYMBOL: ERROR_SYMBOL
 };
 
@@ -35,6 +28,7 @@ function Namespace(name) {
   this._set = [];
   this.id = null;
   this._contexts = new Map();
+  this._indent = 0;
 }
 
 Namespace.prototype.set = function set(key, value) {
@@ -43,8 +37,8 @@ Namespace.prototype.set = function set(key, value) {
   }
 
   if (DEBUG_CLS_HOOKED) {
-    debug2('    SETTING KEY:' + key + '=' + value + ' in ns:' + this.name + ' uid:' + currentUid + ' active:' +
-      util.inspect(this.active, true));
+    const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
+    debug2(indentStr + 'SETTING KEY:' + key + '=' + value + ' in ns:' + this.name + ' currentUid:' + currentUid + ' active:' + util.inspect(this.active, true));
   }
   this.active[key] = value;
   return value;
@@ -53,22 +47,22 @@ Namespace.prototype.set = function set(key, value) {
 Namespace.prototype.get = function get(key) {
   if (!this.active) {
     if (DEBUG_CLS_HOOKED) {
-      debug2('    GETTING KEY:' + key + '=undefined' + ' ' + this.name + ' uid:' + currentUid + ' active:' +
-        util.inspect(this.active, true));
+      const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
+      debug2(indentStr + 'GETTING KEY NO ACTIVE NS:' + key + '=undefined' + ' ' + this.name + ' currentUid:' + currentUid + ' active:' + util.inspect(this.active, true));
     }
     return undefined;
   }
   if (DEBUG_CLS_HOOKED) {
-    debug2('    GETTING KEY:' + key + '=' + this.active[key] + ' ' + this.name + ' uid:' + currentUid + ' active:' +
-      util.inspect(this.active, true));
+    const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
+    debug2(indentStr + 'GETTING KEY:' + key + '=' + this.active[key] + ' ' + this.name + ' currentUid:' + currentUid + ' active:' + util.inspect(this.active, true));
   }
   return this.active[key];
 };
 
 Namespace.prototype.createContext = function createContext() {
   if (DEBUG_CLS_HOOKED) {
-    debug2('   CREATING Context: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + ' active:' +
-      util.inspect(this.active, true, 2, true));
+    const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
+    debug2(indentStr + 'CREATING Context: ' + this.name + ' currentUid:' + currentUid + ' len:' + this._set.length + ' ' + ' active:' + util.inspect(this.active, true, 2, true));
   }
 
   let context = Object.create(this.active ? this.active : Object.prototype);
@@ -76,8 +70,8 @@ Namespace.prototype.createContext = function createContext() {
   context.id = currentUid;
 
   if (DEBUG_CLS_HOOKED) {
-    debug2('   CREATED Context: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + ' context:' +
-      util.inspect(context, true, 2, true));
+    const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
+    debug2(indentStr + 'CREATED Context: ' + this.name + ' currentUid:' + currentUid + ' len:' + this._set.length + ' ' + ' context:' + util.inspect(context, true, 2, true));
   }
 
   return context;
@@ -88,22 +82,20 @@ Namespace.prototype.run = function run(fn) {
   this.enter(context);
   try {
     if (DEBUG_CLS_HOOKED) {
-      debug2(' BEFORE RUN: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' +
-        util.inspect(context));
+      const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
+      debug2(indentStr + 'BEFORE RUN: ' + this.name + ' currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
     }
     fn(context);
     return context;
-  }
-  catch (exception) {
+  } catch (exception) {
     if (exception) {
       exception[ERROR_SYMBOL] = context;
     }
     throw exception;
-  }
-  finally {
+  } finally {
     if (DEBUG_CLS_HOOKED) {
-      debug2(' AFTER RUN: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' +
-        util.inspect(context));
+      const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
+      debug2(indentStr + 'AFTER RUN: ' + this.name + ' currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
     }
     this.exit(context);
   }
@@ -132,15 +124,13 @@ Namespace.prototype.runPromise = function runPromise(fn) {
   }
 
   if (DEBUG_CLS_HOOKED) {
-    debug2(' BEFORE runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' +
-      util.inspect(context));
+    debug2(' BEFORE runPromise: ' + this.name + ' currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
   }
 
   return promise
     .then(result => {
       if (DEBUG_CLS_HOOKED) {
-        debug2(' AFTER runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' +
-          util.inspect(context));
+        debug2(' AFTER runPromise then: ' + this.name + ' currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
       }
       this.exit(context);
       return result;
@@ -148,8 +138,7 @@ Namespace.prototype.runPromise = function runPromise(fn) {
     .catch(err => {
       err[ERROR_SYMBOL] = context;
       if (DEBUG_CLS_HOOKED) {
-        debug2(' AFTER runPromise: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' +
-          util.inspect(context));
+        debug2(' AFTER runPromise catch: ' + this.name + ' currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
       }
       this.exit(context);
       throw err;
@@ -160,8 +149,7 @@ Namespace.prototype.bind = function bindFactory(fn, context) {
   if (!context) {
     if (!this.active) {
       context = this.createContext();
-    }
-    else {
+    } else {
       context = this.active;
     }
   }
@@ -171,14 +159,12 @@ Namespace.prototype.bind = function bindFactory(fn, context) {
     self.enter(context);
     try {
       return fn.apply(this, arguments);
-    }
-    catch (exception) {
+    } catch (exception) {
       if (exception) {
         exception[ERROR_SYMBOL] = context;
       }
       throw exception;
-    }
-    finally {
+    } finally {
       self.exit(context);
     }
   };
@@ -187,8 +173,8 @@ Namespace.prototype.bind = function bindFactory(fn, context) {
 Namespace.prototype.enter = function enter(context) {
   assert.ok(context, 'context must be provided for entering');
   if (DEBUG_CLS_HOOKED) {
-    debug2('  ENTER ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' context: ' +
-      util.inspect(context));
+    const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
+    debug2(indentStr + 'ENTER ' + this.name + ' currentUid:' + currentUid + ' len:' + this._set.length + ' context: ' + util.inspect(context));
   }
 
   this._set.push(this.active);
@@ -198,8 +184,8 @@ Namespace.prototype.enter = function enter(context) {
 Namespace.prototype.exit = function exit(context) {
   assert.ok(context, 'context must be provided for exiting');
   if (DEBUG_CLS_HOOKED) {
-    debug2('  EXIT ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' context: ' +
-      util.inspect(context));
+    const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
+    debug2(indentStr + 'EXIT ' + this.name + ' currentUid:' + currentUid + ' len:' + this._set.length + ' context: ' + util.inspect(context));
   }
 
   // Fast path for most exits that are at the top of the stack
@@ -216,8 +202,7 @@ Namespace.prototype.exit = function exit(context) {
     if (DEBUG_CLS_HOOKED) {
       debug2('??ERROR?? context exiting but not entered - ignoring: ' + util.inspect(context));
     }
-    assert.ok(index >= 0, 'context not currently entered; can\'t exit. \n' + util.inspect(this) + '\n' +
-      util.inspect(context));
+    assert.ok(index >= 0, 'context not currently entered; can\'t exit. \n' + util.inspect(this) + '\n' + util.inspect(context));
   } else {
     assert.ok(index, 'can\'t remove top context');
     this._set.splice(index, 1);
@@ -281,75 +266,80 @@ function createNamespace(name) {
   assert.ok(name, 'namespace must be given a name.');
 
   if (DEBUG_CLS_HOOKED) {
-    debug2('CREATING NAMESPACE ' + name);
+    debug2(`CREATING NAMESPACE ${name}`);
   }
   let namespace = new Namespace(name);
   namespace.id = currentUid;
 
-  asyncHook.addHooks({
-    init(uid, handle, provider, parentUid, parentHandle) {
-      //parentUid = parentUid || currentUid;  // Suggested usage but appears to work better for tracing modules.
-      currentUid = uid;
+  const hook = async_hooks.createHook({
+    init(asyncId, type, triggerId, resource) {
+      currentUid = async_hooks.currentId();
 
       //CHAIN Parent's Context onto child if none exists. This is needed to pass net-events.spec
-      if (parentUid) {
-        namespace._contexts.set(uid, namespace._contexts.get(parentUid));
+      if (triggerId) {
+        namespace._contexts.set(currentUid, namespace._contexts.get(triggerId));
         if (DEBUG_CLS_HOOKED) {
-          debug2('PARENTID: ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + provider);
+          const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+          debug2(`${indentStr}INIT ${name} WITH TRIGGERID:${triggerId} asyncId:${asyncId} currentUid:${currentUid} type:${type} active:${util.inspect(namespace.active, true)} resource:${resource}`);
         }
       } else {
         namespace._contexts.set(currentUid, namespace.active);
-      }
-
-      if (DEBUG_CLS_HOOKED) {
-        debug2('INIT ' + name + ' uid:' + uid + ' parent:' + parentUid + ' provider:' + invertedProviders[provider]
-          + ' active:' + util.inspect(namespace.active, true));
+        if (DEBUG_CLS_HOOKED) {
+          const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+          debug2(`${indentStr}INIT ${name} asyncId:${asyncId} currentUid:${currentUid} type:${type} active:${util.inspect(namespace.active, true)} resource:${resource}`);
+        }
       }
 
     },
-    pre(uid, handle) {
-      currentUid = uid;
-      let context = namespace._contexts.get(uid);
+    before(asyncId) {
+      currentUid = async_hooks.currentId();
+      let context = namespace._contexts.get(currentUid);
       if (context) {
         if (DEBUG_CLS_HOOKED) {
-          debug2(' PRE ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle) + ' context:' +
-            util.inspect(context));
+          const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+          debug2(`${indentStr}BEFORE ${name} asyncId:${asyncId} currentUid:${currentUid} context:${util.inspect(context)}`);
+          namespace._indent += 2;
         }
 
         namespace.enter(context);
-      } else {
-        if (DEBUG_CLS_HOOKED) {
-          debug2(' PRE MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
-        }
+
+      } else if (DEBUG_CLS_HOOKED) {
+        const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+        debug2(`${indentStr}BEFORE MISSING CONTEXT ${name} asyncId:${asyncId} currentUid:${currentUid}`);
+        namespace._indent += 2;
       }
     },
-    post(uid, handle) {
-      currentUid = uid;
-      let context = namespace._contexts.get(uid);
+    after(asyncId) {
+      currentUid = async_hooks.currentId();
+      let context = namespace._contexts.get(currentUid);
       if (context) {
         if (DEBUG_CLS_HOOKED) {
-          debug2(' POST ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle) + ' context:' +
-            util.inspect(context));
+          const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+          debug2(`${indentStr}AFTER ${name} currentUid:${currentUid} asyncId:${asyncId} context:${util.inspect(context)}`);
+          namespace._indent -= 2;
         }
 
         namespace.exit(context);
-      } else {
-        if (DEBUG_CLS_HOOKED) {
-          debug2(' POST MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
-        }
+
+      } else if (DEBUG_CLS_HOOKED) {
+        const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+        debug2(`${indentStr}AFTER MISSING CONTEXT ${name} currentUid:${currentUid} asyncId:${asyncId}`);
+        namespace._indent -= 2;
       }
     },
-    destroy(uid) {
-      currentUid = uid;
+    destroy(asyncId) {
+      currentUid = async_hooks.currentId();
 
       if (DEBUG_CLS_HOOKED) {
-        debug2('DESTROY ' + name + ' uid:' + uid + ' context:' + util.inspect(namespace._contexts.get(currentUid))
-          + ' active:' + util.inspect(namespace.active, true));
+        const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+        debug2(`${indentStr}DESTROY ${name} currentUid:${currentUid} asyncId:${asyncId} context:${util.inspect(namespace._contexts.get(currentUid))} active:${util.inspect(namespace.active, true)}`);
       }
 
-      namespace._contexts.delete(uid);
+      namespace._contexts.delete(currentUid);
     }
   });
+
+  hook.enable();
 
   process.namespaces[name] = namespace;
   return namespace;
@@ -376,27 +366,18 @@ function reset() {
 
 process.namespaces = {};
 
-if (asyncHook._state && !asyncHook._state.enabled) {
-  asyncHook.enable();
-}
+/*if (async_hooks._state && !async_hooks._state.enabled) {
+  async_hooks.enable();
+}*/
 
-function debug2(msg) {
+function debug2(...args) {
   if (process.env.DEBUG) {
-    process._rawDebug(msg);
+    //fs.writeSync(1, `${util.format(...args)}\n`);
+    process._rawDebug(`${util.format(...args)}`);
   }
 }
 
-
-/*function debug(from, ns) {
- process._rawDebug('DEBUG: ' + util.inspect({
- from: from,
- currentUid: currentUid,
- context: ns ? ns._contexts.get(currentUid) : 'no ns'
- }, true, 2, true));
- }*/
-
-
-function getFunctionName(fn) {
+/*function getFunctionName(fn) {
   if (!fn) {
     return fn;
   }
@@ -408,13 +389,13 @@ function getFunctionName(fn) {
   } else if (fn.constructor && fn.constructor.name) {
     return fn.constructor.name;
   }
-}
+}*/
 
 
 // Add back to callstack
-if (DEBUG_CLS_HOOKED) {
+/*if (DEBUG_CLS_HOOKED) {
   var stackChain = require('stack-chain');
   for (var modifier in stackChain.filter._modifiers) {
     stackChain.filter.deattach(modifier);
   }
-}
+}*/
