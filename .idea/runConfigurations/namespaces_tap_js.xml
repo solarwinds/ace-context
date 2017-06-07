@@ -1,5 +1,26 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="namespaces.tap.js" type="NodeJSConfigurationType" factoryName="Node.js" folderName="tap tests" path-to-node="project" path-to-js-file="node_modules/tap/bin/run.js" application-parameters="test/tap/namespaces.tap.js -Rspec" working-dir="$PROJECT_DIR$">
+  <configuration default="false" name="namespaces.tap.js" type="NodeJSConfigurationType" factoryName="Node.js" folderName="tap tests" path-to-node="$USER_HOME$/.nvm/versions/node/v8.0.0/bin/node" path-to-js-file="node_modules/tap/bin/run.js" application-parameters="test/tap/namespaces.tap.js -Rspec" working-dir="$PROJECT_DIR$">
+    <EXTENSION ID="com.jetbrains.nodejs.remote.docker.NodeJSDockerRunConfigurationExtension">
+      <option name="envVars">
+        <list />
+      </option>
+      <option name="extraHosts">
+        <list />
+      </option>
+      <option name="links">
+        <list />
+      </option>
+      <option name="networkDisabled" value="false" />
+      <option name="networkMode" value="bridge" />
+      <option name="portBindings">
+        <list />
+      </option>
+      <option name="publishAllPorts" value="false" />
+      <option name="version" value="1" />
+      <option name="volumeBindings">
+        <list />
+      </option>
+    </EXTENSION>
     <method />
   </configuration>
 </component>

@@ -8,7 +8,7 @@
   ],
   "scripts": {
     "test": "mocha test/*.js & tap test/tap/*.tap.js",
-    "test-mocha": "mocha test/*.js & tap test/tap/*.tap.js",
+    "test-mocha": "mocha test/*.js",
     "test-tap": "tap test/tap/*.tap.js",
     "debug": "node --nolazy --debug-brk=5858 "
   },

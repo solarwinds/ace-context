@@ -24,7 +24,7 @@ describe('cls with net connection', () => {
     namespace.run(() => {
       namespace.set('test', 'originalValue');
 
-      var server;
+      let server;
       namespace.run(() => {
         namespace.set('test', 'newContextValue');
 
@@ -45,11 +45,11 @@ describe('cls with net connection', () => {
         });
 
         server.listen(() => {
-          var address = server.address();
+          const address = server.address();
           namespace.run(() => {
             namespace.set('test', 'MONKEY');
 
-            var client = net.connect(address.port, () => {
+            const client = net.connect(address.port, () => {
               //namespace.bindEmitter(client);
               testValue3 = namespace.get('test');
               client.write('Hello');
