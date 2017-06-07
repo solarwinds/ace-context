@@ -320,17 +320,17 @@ function createNamespace(name) {
       let context = namespace._contexts.get(currentUid);
       if (context) {
         if (DEBUG_CLS_HOOKED) {
+          namespace._indent -= 2;
           const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
           debug2(`${indentStr}AFTER ${name} asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} context:${util.inspect(context)}`);
-          namespace._indent -= 2;
         }
 
         namespace.exit(context);
 
       } else if (DEBUG_CLS_HOOKED) {
+        namespace._indent -= 2;
         const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
         debug2(`${indentStr}AFTER MISSING CONTEXT ${name} asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} context:${util.inspect(context)}`);
-        namespace._indent -= 2;
       }
     },
     destroy(asyncId) {
