@@ -2,7 +2,7 @@
 
 require('mocha');
 const chai = require('chai');
-const util = require('util');
+//const util = require('util');
 const should = chai.should();
 
 const net = require('net');
