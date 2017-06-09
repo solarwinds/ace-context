@@ -290,21 +290,21 @@ function createNamespace(name) {
       currentUid = async_hooks.currentId();
 
       //CHAIN Parent's Context onto child if none exists. This is needed to pass net-events.spec
-      if (triggerId) {
+      let initContext = namespace.active;
+      if(!initContext && triggerId) {
         let parentContext = namespace._contexts.get(triggerId);
-        if(!parentContext){
-          if (DEBUG_CLS_HOOKED) {
-            const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
-            debug2(`${indentStr}INIT (${name}) NO PARENT CONTEXT asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} type:${type} active:${util.inspect(namespace.active, true)} resource:${resource}`);
-          }
-        }else{
+        if (parentContext) {
+          namespace.active = parentContext;
           namespace._contexts.set(currentUid, parentContext);
           if (DEBUG_CLS_HOOKED) {
             const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
             debug2(`${indentStr}INIT (${name}) WITH PARENT CONTEXT asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} type:${type} active:${util.inspect(namespace.active, true)} resource:${resource}`);
           }
-        }
-      } else {
+        } else if (DEBUG_CLS_HOOKED) {
+            const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+            debug2(`${indentStr}INIT (${name}) MISSING CONTEXT asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} type:${type} active:${util.inspect(namespace.active, true)} resource:${resource}`);
+          }
+      }else {
         namespace._contexts.set(currentUid, namespace.active);
         if (DEBUG_CLS_HOOKED) {
           const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
