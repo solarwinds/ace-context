@@ -36,11 +36,13 @@ Namespace.prototype.set = function set(key, value) {
     throw new Error('No context available. ns.run() or ns.bind() must be called first.');
   }
 
+  this.active[key] = value;
+
   if (DEBUG_CLS_HOOKED) {
     const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
-    debug2(indentStr + 'CONTEXT-SETTING KEY:' + key + '=' + value + ' in ns:' + this.name + ' currentUid:' + currentUid + ' active:' + util.inspect(this.active, true));
+    debug2(indentStr + 'CONTEXT-SET KEY:' + key + '=' + value + ' in ns:' + this.name + ' currentUid:' + currentUid + ' active:' + util.inspect(this.active, true));
   }
-  this.active[key] = value;
+
   return value;
 };
 
@@ -68,10 +70,12 @@ Namespace.prototype.createContext = function createContext() {
   let context = Object.create(this.active ? this.active : Object.prototype);
   context._ns_name = this.name;
   context.id = currentUid;
+  let asyncHooksCurrentId = async_hooks.currentId();
+  let triggerId = async_hooks.triggerId();
 
   if (DEBUG_CLS_HOOKED) {
     const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
-    debug2(indentStr + 'CONTEXT-CREATED Context: (' + this.name + ') currentUid:' + currentUid + ' len:' + this._set.length + ' ' + ' context:' + util.inspect(context, true, 2, true));
+    debug2(`${indentStr}CONTEXT-CREATED Context: (${this.name}) currentUid:${currentUid} asyncHooksCurrentId:${currentUid} triggerId:${currentUid} len:${this._set.length} context:${util.inspect(context, true, 2, true)}`);
   }
 
   return context;
@@ -290,26 +294,36 @@ function createNamespace(name) {
       currentUid = async_hooks.currentId();
 
       //CHAIN Parent's Context onto child if none exists. This is needed to pass net-events.spec
-      let initContext = namespace.active;
-      if(!initContext && triggerId) {
-        let parentContext = namespace._contexts.get(triggerId);
-        if (parentContext) {
-          namespace.active = parentContext;
-          namespace._contexts.set(currentUid, parentContext);
-          if (DEBUG_CLS_HOOKED) {
-            const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
-            debug2(`${indentStr}INIT (${name}) WITH PARENT CONTEXT asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} type:${type} active:${util.inspect(namespace.active, true)} resource:${resource}`);
-          }
-        } else if (DEBUG_CLS_HOOKED) {
-            const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
-            debug2(`${indentStr}INIT (${name}) MISSING CONTEXT asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} type:${type} active:${util.inspect(namespace.active, true)} resource:${resource}`);
-          }
-      }else {
-        namespace._contexts.set(currentUid, namespace.active);
+      // let initContext = namespace.active;
+      // if(!initContext && triggerId) {
+      //   let parentContext = namespace._contexts.get(triggerId);
+      //   if (parentContext) {
+      //     namespace.active = parentContext;
+      //     namespace._contexts.set(currentUid, parentContext);
+      //     if (DEBUG_CLS_HOOKED) {
+      //       const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+      //       debug2(`${indentStr}INIT [${type}] (${name}) WITH PARENT CONTEXT asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} resource:${resource}`);
+      //     }
+      //   } else if (DEBUG_CLS_HOOKED) {
+      //       const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+      //       debug2(`${indentStr}INIT [${type}] (${name}) MISSING CONTEXT asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} resource:${resource}`);
+      //     }
+      // }else {
+      //   namespace._contexts.set(currentUid, namespace.active);
+      //   if (DEBUG_CLS_HOOKED) {
+      //     const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+      //     debug2(`${indentStr}INIT [${type}] (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} resource:${resource}`);
+      //   }
+      // }
+      if(namespace.active) {
+        namespace._contexts.set(asyncId, namespace.active);
         if (DEBUG_CLS_HOOKED) {
           const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
-          debug2(`${indentStr}INIT (${name}) asyncId:${asyncId} currentUid:${currentUid} type:${type} active:${util.inspect(namespace.active, true)} resource:${resource}`);
+          debug2(`${indentStr}INIT [${type}] (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} resource:${resource}`);
         }
+      }else if (DEBUG_CLS_HOOKED) {
+        const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+        debug2(`${indentStr}INIT [${type}] (${name}) MISSING CONTEXT asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} resource:${resource}`);
       }
 
     },
@@ -320,7 +334,7 @@ function createNamespace(name) {
       if (context) {
         if (DEBUG_CLS_HOOKED) {
           const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
-          debug2(`${indentStr}BEFORE (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} context:${util.inspect(context)}`);
+          debug2(`${indentStr}BEFORE (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} context:${util.inspect(context)}`);
           namespace._indent += 2;
         }
 
@@ -328,7 +342,7 @@ function createNamespace(name) {
 
       } else if (DEBUG_CLS_HOOKED) {
         const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
-        debug2(`${indentStr}BEFORE MISSING CONTEXT (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId}`);
+        debug2(`${indentStr}BEFORE MISSING CONTEXT (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)}`);
         namespace._indent += 2;
       }
     },
@@ -340,7 +354,7 @@ function createNamespace(name) {
         if (DEBUG_CLS_HOOKED) {
           namespace._indent -= 2;
           const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
-          debug2(`${indentStr}AFTER (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} context:${util.inspect(context)}`);
+          debug2(`${indentStr}AFTER (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} context:${util.inspect(context)}`);
         }
 
         namespace.exit(context);
@@ -348,7 +362,7 @@ function createNamespace(name) {
       } else if (DEBUG_CLS_HOOKED) {
         namespace._indent -= 2;
         const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
-        debug2(`${indentStr}AFTER MISSING CONTEXT (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} context:${util.inspect(context)}`);
+        debug2(`${indentStr}AFTER MISSING CONTEXT (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} context:${util.inspect(context)}`);
       }
     },
     destroy(asyncId) {
@@ -356,7 +370,7 @@ function createNamespace(name) {
       let triggerId = async_hooks.triggerId();
       if (DEBUG_CLS_HOOKED) {
         const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
-        debug2(`${indentStr}DESTROY (${name}) currentUid:${currentUid} asyncId:${asyncId} triggerId:${triggerId} context:${util.inspect(namespace._contexts.get(currentUid))} active:${util.inspect(namespace.active, true)}`);
+        debug2(`${indentStr}DESTROY (${name}) currentUid:${currentUid} asyncId:${asyncId} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} context:${util.inspect(namespace._contexts.get(currentUid))}`);
       }
 
       namespace._contexts.delete(currentUid);
