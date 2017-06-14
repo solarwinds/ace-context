@@ -75,7 +75,7 @@ Namespace.prototype.createContext = function createContext() {
 
   if (DEBUG_CLS_HOOKED) {
     const indentStr = ' '.repeat(this._indent < 0 ? 0 : this._indent);
-    debug2(`${indentStr}CONTEXT-CREATED Context: (${this.name}) currentUid:${currentUid} asyncHooksCurrentId:${currentUid} triggerId:${currentUid} len:${this._set.length} context:${util.inspect(context, true, 2, true)}`);
+    debug2(`${indentStr}CONTEXT-CREATED Context: (${this.name}) currentUid:${currentUid} asyncHooksCurrentId:${currentUid} triggerId:${triggerId} len:${this._set.length} context:${util.inspect(context, true, 2, true)}`);
   }
 
   return context;

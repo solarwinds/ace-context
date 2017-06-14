@@ -30,17 +30,16 @@
   "license": "BSD-2-Clause",
   "engineStrict": true,
   "engines": {
-    "node": "^4.7 || ^6.9.2 || ^7.3"
+    "node": "^8.1.1"
   },
   "dependencies": {
-    "async-hook": "^1.7.1",
     "emitter-listener": "^1.0.1"
   },
   "devDependencies": {
     "chai": "^4.0.2",
-    "mocha": "^3.0.2",
-    "sinon": "^2.3.5",
-    "sinon-chai": "^2.8.0",
+    "mocha": "^3.4.2",
+    "sinon": "^2.3.4",
+    "sinon-chai": "^2.11.0",
     "superagent": "^3.5.2",
     "tap": "^10.3.3",
     "tap-mocha-reporter": "3.0.3"

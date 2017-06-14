@@ -2,9 +2,7 @@
 
 require('mocha');
 const chai = require('chai');
-//const util = require('util');
 const should = chai.should();
-
 const net = require('net');
 const cls = require('../context.js');
 
@@ -16,7 +14,7 @@ describe('cls with net connection', () => {
   let testValue3;
   let testValue4;
 
-  before((done) => {
+  before(function(done) {
 
     let serverDone = false;
     let clientDone = false;
@@ -29,7 +27,7 @@ describe('cls with net connection', () => {
         namespace.set('test', 'newContextValue');
 
         server = net.createServer((socket) => {
-          namespace.bindEmitter(socket);
+          //namespace.bindEmitter(socket);
 
           testValue1 = namespace.get('test');
 
@@ -50,7 +48,7 @@ describe('cls with net connection', () => {
             namespace.set('test', 'MONKEY');
 
             const client = net.connect(address.port, () => {
-              namespace.bindEmitter(client);
+              //namespace.bindEmitter(client);
               testValue3 = namespace.get('test');
               client.write('Hello');
 
