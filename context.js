@@ -326,13 +326,30 @@ function createNamespace(name) {
         debug2(`${indentStr}INIT [${type}] (${name}) MISSING CONTEXT asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} resource:${resource}`);
       }
 
+      if(DEBUG_CLS_HOOKED && type === 'PROMISE'){
+        debug2(util.inspect(resource), {showHidden: true});
+        const parentId = resource.parentId;
+        const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
+        debug2(`${indentStr}INIT [${type}] (${name}) RESOURCE-PROMISE parentId:${parentId} asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} resource:${resource}`);
+      }
+
     },
     before(asyncId) {
       currentUid = async_hooks.currentId();
-      let triggerId = async_hooks.triggerId();
-      let context = namespace._contexts.get(currentUid);
+      let context;
+
+      if(currentUid === 0){
+        // CurrentId will be 0 when triggered from C++. Promise events
+        // https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md#triggerid
+        context = namespace._contexts.get(asyncId);
+      }else{
+        context = namespace._contexts.get(currentUid);
+      }
+
+
       if (context) {
         if (DEBUG_CLS_HOOKED) {
+          const triggerId = async_hooks.triggerId();
           const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
           debug2(`${indentStr}BEFORE (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} context:${util.inspect(context)}`);
           namespace._indent += 2;
@@ -341,6 +358,7 @@ function createNamespace(name) {
         namespace.enter(context);
 
       } else if (DEBUG_CLS_HOOKED) {
+        const triggerId = async_hooks.triggerId();
         const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
         debug2(`${indentStr}BEFORE MISSING CONTEXT (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)}`);
         namespace._indent += 2;
@@ -348,10 +366,10 @@ function createNamespace(name) {
     },
     after(asyncId) {
       currentUid = async_hooks.currentId();
-      let triggerId = async_hooks.triggerId();
-      let context = namespace._contexts.get(currentUid);
+      const context = namespace._contexts.get(currentUid);
       if (context) {
         if (DEBUG_CLS_HOOKED) {
+          const triggerId = async_hooks.triggerId();
           namespace._indent -= 2;
           const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
           debug2(`${indentStr}AFTER (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} context:${util.inspect(context)}`);
@@ -360,6 +378,7 @@ function createNamespace(name) {
         namespace.exit(context);
 
       } else if (DEBUG_CLS_HOOKED) {
+        const triggerId = async_hooks.triggerId();
         namespace._indent -= 2;
         const indentStr = ' '.repeat(namespace._indent < 0 ? 0 : namespace._indent);
         debug2(`${indentStr}AFTER MISSING CONTEXT (${name}) asyncId:${asyncId} currentUid:${currentUid} triggerId:${triggerId} active:${util.inspect(namespace.active, true)} context:${util.inspect(context)}`);

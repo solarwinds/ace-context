@@ -15,7 +15,7 @@ describe('Promise context convention', () => {
   let ns = context.createNamespace('PromiseConventionNS');
   let conventionId = 0;
 
-  before(() => {
+  before((done) => {
     ns.run(() => {
       ns.set('test', 2);
       promise = new Promise((resolve) => {
@@ -31,13 +31,15 @@ describe('Promise context convention', () => {
       promise.then(() => {
         //console.log('This Promise implementation follows convention ' + ns.get('test'));
         conventionId = ns.get('test');
+        done();
       });
     });
 
   });
 
   it('convention should be 3', () => {
-    conventionId.should.equal(3);
+    should.equal(conventionId, 3);
+    //conventionId.should.equal(3);
   });
 
 });
