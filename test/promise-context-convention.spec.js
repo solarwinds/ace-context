@@ -39,7 +39,6 @@ describe('Promise context convention', () => {
 
   it('convention should be 3', () => {
     should.equal(conventionId, 3);
-    //conventionId.should.equal(3);
   });
 
 });

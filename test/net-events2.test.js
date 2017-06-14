@@ -17,7 +17,7 @@ describe('cls with net connection 2', function() {
     const namespace = cls.createNamespace('net2');
 
     namespace.run(
-      function namespace_run1(ctx) {
+      function namespaceRun1(ctx) {
         namespace.set(keyName, TEST_VALUE);
         expect(namespace.get(keyName)).equal(ctx.netTest2, 'context should be the same');
         const server = net.createServer();
@@ -36,9 +36,9 @@ describe('cls with net connection 2', function() {
           }
         );
 
-        server.listen(function OnServerListen() {
+        server.listen(function onServerListen() {
           namespace.run(
-            function namespace_run2(ctx) {
+            function namespaceRun2(ctx) {
               namespace.set(keyName, TEST_VALUE2);
               expect(namespace.get(keyName)).equal(ctx.netTest2, 'context should be the same');
 
@@ -51,7 +51,7 @@ describe('cls with net connection 2', function() {
                   expect(namespace.get(keyName)).equal(TEST_VALUE2, 'state preserved for client data');
                 });
 
-                client.on('close', function OnClientSocketClose() {
+                client.on('close', function onClientSocketClose() {
                   done();
                 });
 

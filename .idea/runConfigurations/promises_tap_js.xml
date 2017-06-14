@@ -1,5 +1,8 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="promises.tap.js" type="NodeJSConfigurationType" factoryName="Node.js" folderName="tap tests" path-to-node="project" path-to-js-file="node_modules/tap/bin/run.js" application-parameters="test/tap/promises.tap.js -Rspec" working-dir="$PROJECT_DIR$">
+    <envs>
+      <env name="DEBUG_CLS_HOOKED" value="1" />
+    </envs>
     <EXTENSION ID="com.jetbrains.nodejs.remote.docker.NodeJSDockerRunConfigurationExtension">
       <option name="envVars">
         <list />
