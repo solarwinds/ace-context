@@ -16,7 +16,8 @@
 2. Second implementation called **[AsyncWrap, async-wrap or async_wrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md)** was included to Nodejs v0.12.
     - `AsyncWrap` is unofficial and undocumented but is currently in Nodejs versions 6 & 7
     - `cls-hooked` currently uses `AsyncWrap`
-3. Third implementation and [offically Node-eps accepted](https://github.com/nodejs/node-eps/blob/master/006-asynchooks-api.md) **AsyncHook API** was recently merged into Nodejs's core master branch and is expected to be in Nodejs 8. :)
+3. Third implementation and [offically Node-eps accepted](https://github.com/nodejs/node-eps/blob/master/006-asynchooks-api.md) **AsyncHook API** was recently merged into Nodejs's core master branch and is in Nodejs 8. :) 
+**A new version of `cls-hooked` is being updated to use the new `async-hooks` API in Node 8.**  See [issue #4 - Use AsyncHook API](https://github.com/Jeff-Lewis/cls-hooked/issues/4).
 
 ---
 Continuation-local storage works like thread-local storage in threaded

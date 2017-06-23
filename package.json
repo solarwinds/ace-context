@@ -28,7 +28,7 @@
   "license": "BSD-2-Clause",
   "engineStrict": true,
   "engines": {
-    "node": "^4.7 || ^6.9.2 || ^7.3"
+    "node": "^4.7 || ~6.9 || ~7.3"
   },
   "dependencies": {
     "async-hook": "^1.7.1",
