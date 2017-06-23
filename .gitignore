@@ -1,5 +1,5 @@
 node_modules/
-.idea/
-!.idea/runConfigurations
+.idea/*
+!.idea/runConfigurations/
 npm-debug.log
 .vscode
