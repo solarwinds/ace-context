@@ -79,6 +79,16 @@ function mapIds(username, groupname, callback) {
   });
 }
 
+try{
+  if(fs.existsSync(FILENAME)) {
+    deleteFile();
+  }
+}catch(err){
+  console.log(err);
+}
+
+tap.setTimeout(10000);
+
 test("continuation-local state with MakeCallback and fs module", function (t) {
 
   if(os.platform() === 'win32'){
@@ -869,14 +879,17 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
       });
     });
 
-    t.test("fs.watchFile", {setTimeout: 500}, function (t) {
+    t.test("fs.watchFile", {timeout: 10000, diagnostic: true}, function (t) {
+      t.comment('starting: fs.watchFile test');
       createFile(t);
 
       namespace.run(function () {
         namespace.set('test', 'watchFile');
         t.equal(namespace.get('test'), 'watchFile', "state has been mutated");
 
-        fs.watchFile(FILENAME, {persistent: false, interval: 1}, function (before, after) {
+        t.comment('starting: watchFile on ' + FILENAME);
+        fs.watchFile(FILENAME, {persistent: true, interval: 1}, function (before, after) {
+          t.comment('event: watchFile evented ' + FILENAME);
           t.equal(namespace.get('test'), 'watchFile', "mutated state has persisted to fs.watchFile's callback");
 
           t.ok(before.ino, "file has an entry");
@@ -886,13 +899,18 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
           process.nextTick(function () {
             deleteFile();
             t.end();
-          });
+          }, 10);
         });
 
         setTimeout(function poke() {
+          t.comment('poking: ' + FILENAME);
           fs.appendFileSync(FILENAME, 'still a test');
-        }, 20);
+        }, 10);
       });
     });
   });
+});
+
+tap.tearDown(function () {
+  console.log('tap.tearDown');
 });
