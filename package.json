@@ -1,6 +1,6 @@
 {
   "name": "cls-hooked",
-  "version": "4.1.6",
+  "version": "4.1.7",
   "description": "CLS using AsynWrap instead of async-listener - Node >= 4.7.0",
   "main": "context.js",
   "files": [
@@ -28,10 +28,10 @@
   "license": "BSD-2-Clause",
   "engineStrict": true,
   "engines": {
-    "node": "^4.7 || ~6.9 || ~7.3"
+    "node": "^4.7 || >=6.9 || >=7.3"
   },
   "dependencies": {
-    "async-hook": "^1.7.1",
+    "async-hook-jl": "^1.7.5",
     "emitter-listener": "^1.0.1"
   },
   "devDependencies": {
