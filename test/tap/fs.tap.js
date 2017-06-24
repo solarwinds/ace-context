@@ -87,8 +87,6 @@ try{
   console.log(err);
 }
 
-tap.setTimeout(10000);
-
 test("continuation-local state with MakeCallback and fs module", function (t) {
 
   if(os.platform() === 'win32'){
@@ -909,8 +907,4 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
       });
     });
   });
-});
-
-tap.tearDown(function () {
-  console.log('tap.tearDown');
 });
