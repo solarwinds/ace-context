@@ -1,5 +1,10 @@
 # `cls-hooked` Changelog
 
+## v4.1.7
+
+* fix: npm engine semver to allow node 6.10.x.
+* chore: forked async-hook to updated its engine semver also
+
 ## v4.1.6
 
 * fix: Use the correct `err` variable name in try/catch. Thanks to [@enko](https://github.com/enko).
