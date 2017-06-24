@@ -569,8 +569,7 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
         namespace.set('test', 'watch');
         t.equal(namespace.get('test'), 'watch', "state has been mutated");
 
-        var watcher = fs.watch(FILENAME,
-          {persistent: false, interval: 200},
+        var watcher = fs.watch(FILENAME, {persistent: false, interval: 200},
           function (event) {
             t.equal(namespace.get('test'), 'watch',
               "mutated state has persisted to fs.watch's callback");
@@ -870,7 +869,7 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
       });
     });
 
-    t.test("fs.watchFile", function (t) {
+    t.test("fs.watchFile", {setTimeout: 500}, function (t) {
       createFile(t);
 
       namespace.run(function () {
@@ -878,8 +877,7 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
         t.equal(namespace.get('test'), 'watchFile', "state has been mutated");
 
         fs.watchFile(FILENAME, {persistent: false, interval: 1}, function (before, after) {
-          t.equal(namespace.get('test'), 'watchFile',
-            "mutated state has persisted to fs.watchFile's callback");
+          t.equal(namespace.get('test'), 'watchFile', "mutated state has persisted to fs.watchFile's callback");
 
           t.ok(before.ino, "file has an entry");
           t.equal(before.ino, after.ino, "file is at the same location");
@@ -893,7 +891,7 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
 
         setTimeout(function poke() {
           fs.appendFileSync(FILENAME, 'still a test');
-        }, 200);
+        }, 20);
       });
     });
   });
