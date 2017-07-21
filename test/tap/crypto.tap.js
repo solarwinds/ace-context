@@ -2,7 +2,7 @@
 
 const tap = require('tap');
 const test = tap.test;
-const createNamespace = require('../../context.js').createNamespace;
+const createNamespace = require('../../index.js').createNamespace;
 
 let crypto;
 try { crypto = require('crypto'); }

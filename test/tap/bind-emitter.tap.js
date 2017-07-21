@@ -1,9 +1,8 @@
 'use strict';
 
-var test         = require('tap').test
-  , EventEmitter = require('events').EventEmitter
-  , cls          = require('../../context.js')
-  ;
+const test = require('tap').test;
+const EventEmitter = require('events').EventEmitter;
+const cls = require('../../index.js');
 
 test("event emitters bound to CLS context", function (t) {
   t.plan(13);

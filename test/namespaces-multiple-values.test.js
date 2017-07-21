@@ -5,7 +5,7 @@ const chai = require('chai');
 const util = require('util');
 chai.should();
 
-const cls = require('../context.js');
+const cls = require('../index.js');
 
 describe('multiple namespaces handles them correctly', () => {
 

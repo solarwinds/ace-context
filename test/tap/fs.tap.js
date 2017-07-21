@@ -2,7 +2,7 @@
 
 var os = require('os');
 
-var createNamespace = require('./../../context.js').createNamespace
+var createNamespace = require('./../../index.js').createNamespace
   , fs = require('fs')
   , path = require('path')
   , exec = require('child_process').exec

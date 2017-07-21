@@ -2,7 +2,7 @@
 
 var net = require('net');
 var test = require('tap').test;
-var createNamespace = require('../../context').createNamespace;
+var createNamespace = require('../../index').createNamespace;
 
 test('continuation-local state with net connection', function(t) {
   t.plan(4);

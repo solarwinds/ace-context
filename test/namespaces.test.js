@@ -3,7 +3,7 @@
 const chai = require('chai');
 const should = chai.should();
 
-const context = require('../context.js');
+const context = require('../index.js');
 
 chai.config.includeStack = true;
 

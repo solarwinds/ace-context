@@ -4,7 +4,7 @@ require('mocha');
 const chai = require('chai');
 const should = chai.should();
 
-const context = require('../context.js');
+const context = require('../index.js');
 
 /**
  * See https://github.com/othiym23/node-continuation-local-storage/issues/64

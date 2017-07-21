@@ -1,22 +1,22 @@
 'use strict';
 
 // stdlib
-var tap = require('tap');
-var test = tap.test;
-var EventEmitter = require('events').EventEmitter;
+const tap = require('tap');
+const test = tap.test;
+const EventEmitter = require('events').EventEmitter;
 
 // module under test
-var context = require('../../context.js');
+const context = require('../../index.js');
 
 // multiple contexts in use
-var tracer = context.createNamespace('tracer');
+const tracer = context.createNamespace('tracer');
 
 function Trace(harvester) {
   this.harvester = harvester;
 }
 
 Trace.prototype.runHandler = function (handler) {
-  var trace = tracer.run(handler);
+  let trace = tracer.run(handler);
   this.harvester.emit('finished', trace.transaction);
 };
 
@@ -24,8 +24,8 @@ Trace.prototype.runHandler = function (handler) {
 test("simple tracer built on contexts", function (t) {
   t.plan(6);
 
-  var harvester = new EventEmitter();
-  var trace = new Trace(harvester);
+  let harvester = new EventEmitter();
+  let trace = new Trace(harvester);
 
   harvester.on('finished', function (transaction) {
     t.ok(transaction, "transaction should have been passed in");

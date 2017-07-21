@@ -1,9 +1,8 @@
 'use strict';
 
-var tap             = require('tap')
-  , test            = tap.test
-  , createNamespace = require('../../context.js').createNamespace
-  ;
+const tap = require('tap');
+const test = tap.test;
+const createNamespace = require('../../index.js').createNamespace;
 
 test("asynchronously propagating state with local-context-domains", function (t) {
   t.plan(2);

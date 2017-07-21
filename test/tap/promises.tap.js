@@ -2,7 +2,7 @@
 
 var tap             = require('tap')
   , test            = tap.test
-  , createNamespace = require('../../context.js').createNamespace
+  , createNamespace = require('../../index.js').createNamespace
   ;
 
 test("continuation-local state with promises", function (t) {

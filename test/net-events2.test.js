@@ -3,7 +3,7 @@
 const expect = require('chai').expect;
 
 const net = require('net');
-const cls = require('../context.js');
+const cls = require('../index.js');
 
 describe('cls with net connection 2', function() {
 

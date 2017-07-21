@@ -1,11 +1,10 @@
 'use strict';
 
-var tap             = require('tap')
-  , test            = tap.test
-  , createNamespace = require('../../context.js').createNamespace
-  ;
+const tap = require('tap');
+const test = tap.test;
+const createNamespace = require('../../index.js').createNamespace;
 
-var zlib = require('zlib');
+const zlib = require('zlib');
 
 test("continuation-local state with zlib", function (t) {
   t.plan(1);
