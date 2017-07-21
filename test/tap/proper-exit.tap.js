@@ -14,7 +14,7 @@ test('proper exit on uncaughtException', {skip: true}, function(t) {
     }
   });
 
-  var cls = require('../../context.js');
+  var cls = require('../../index.js');
   var ns = cls.createNamespace('x');
   ns.run(function() {
     throw new Error('oops');

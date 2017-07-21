@@ -1,0 +1,20 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Promise context convention" type="mocha-javascript-test-runner" factoryName="Mocha" nameIsGenerated="true">
+    <node-interpreter>project</node-interpreter>
+    <node-options />
+    <working-directory>$PROJECT_DIR$</working-directory>
+    <pass-parent-env>true</pass-parent-env>
+    <envs>
+      <env name="DEBUG" value="1" />
+      <env name="DEBUG_CLS_HOOKED" value="1" />
+    </envs>
+    <ui>bdd</ui>
+    <extra-mocha-options />
+    <test-kind>SUITE</test-kind>
+    <test-file>$PROJECT_DIR$/test/promise-context-convention.spec.js</test-file>
+    <test-names>
+      <name value="Promise context convention" />
+    </test-names>
+    <method />
+  </configuration>
+</component>

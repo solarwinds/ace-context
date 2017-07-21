@@ -4,18 +4,18 @@ require('mocha');
 const chai = require('chai');
 const should = chai.should();
 
-const context = require('../context.js');
+const context = require('../index.js');
 
 /**
  * See https://github.com/othiym23/node-continuation-local-storage/issues/64
  */
 describe('Promise context convention', () => {
 
-  var promise;
-  var ns = context.createNamespace('PromiseConventionNS');
-  var conventionId = 0;
+  let promise;
+  let ns = context.createNamespace('PromiseConventionNS');
+  let conventionId = 0;
 
-  before(() => {
+  before((done) => {
     ns.run(() => {
       ns.set('test', 2);
       promise = new Promise((resolve) => {
@@ -31,13 +31,14 @@ describe('Promise context convention', () => {
       promise.then(() => {
         //console.log('This Promise implementation follows convention ' + ns.get('test'));
         conventionId = ns.get('test');
+        done();
       });
     });
 
   });
 
   it('convention should be 3', () => {
-    conventionId.should.equal(3);
+    should.equal(conventionId, 3);
   });
 
 });

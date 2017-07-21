@@ -1,9 +1,8 @@
 'use strict';
 
-var tap             = require('tap')
-  , test            = tap.test
-  , createNamespace = require('../../context.js').createNamespace
-  ;
+const tap = require('tap');
+const test = tap.test;
+const createNamespace = require('../../index.js').createNamespace;
 
 test("continuation-local state with timers", function (t) {
   t.plan(4);

@@ -1,7 +1,7 @@
 'use strict';
 
 const expect = require('chai').expect;
-const cls = require('../context.js');
+const cls = require('../index.js');
 
 describe("cls simple async local context", function () {
 

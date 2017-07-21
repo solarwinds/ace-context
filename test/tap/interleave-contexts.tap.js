@@ -1,6 +1,6 @@
 'use strict';
 
-var cls  = require('../../context.js')
+var cls  = require('../../index.js')
   , test = require('tap').test
   ;
 

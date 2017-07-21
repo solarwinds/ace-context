@@ -3,7 +3,7 @@
 var tap = require('tap');
 var test = tap.test;
 
-var cls = require('../../context.js');
+var cls = require('../../index.js');
 
 test('nested contexts on a single namespace', function (t) {
   t.plan(7);

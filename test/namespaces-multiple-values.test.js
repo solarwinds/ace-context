@@ -5,7 +5,7 @@ const chai = require('chai');
 const util = require('util');
 chai.should();
 
-const cls = require('../context.js');
+const cls = require('../index.js');
 
 describe('multiple namespaces handles them correctly', () => {
 
@@ -15,7 +15,7 @@ describe('multiple namespaces handles them correctly', () => {
   let test4Val;
 
   let ns1 = cls.createNamespace('ONE');
-  var ns2 = cls.createNamespace('TWO');
+  let ns2 = cls.createNamespace('TWO');
 
 
   before((done) => {
@@ -33,10 +33,10 @@ describe('multiple namespaces handles them correctly', () => {
             process.nextTick(() => {
 
               test1Val = ns1.get('name');
-              //process._rawDebug(util.inspect(ns1), true);
+              process._rawDebug(util.inspect(ns1), true);
 
               test2Val = ns2.get('name');
-              //process._rawDebug(util.inspect(ns2), true);
+              process._rawDebug(util.inspect(ns2), true);
 
               ns1.set('name', 'bob');
               ns2.set('name', 'alice');

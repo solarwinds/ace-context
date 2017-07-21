@@ -1,14 +1,18 @@
 {
   "name": "cls-hooked",
-  "version": "4.1.7",
+  "version": "4.2.0",
   "description": "CLS using AsynWrap instead of async-listener - Node >= 4.7.0",
-  "main": "context.js",
+  "main": "index.js",
   "files": [
-    "context.js"
+    "index.js",
+    "context.js",
+    "context-legacy.js"
   ],
   "scripts": {
     "test": "mocha test/*.js & tap test/tap/*.tap.js",
-    "test-tap": "tap test/tap/*.tap.js"
+    "test-mocha": "mocha test/*.js",
+    "test-tap": "tap test/tap/*.tap.js",
+    "debug": "node --nolazy --debug-brk=5858 "
   },
   "repository": {
     "type": "git",
@@ -26,22 +30,23 @@
     "Jeff Lewis <jlewis@streetconnect.com>"
   ],
   "license": "BSD-2-Clause",
-  "engineStrict": true,
+  "engineStrict": false,
   "engines": {
-    "node": "^4.7 || >=6.9 || >=7.3"
+    "node": "^4.7 || >=6.9 || >=7.3 || >=8.2.1"
   },
   "dependencies": {
     "async-hook-jl": "^1.7.5",
-    "emitter-listener": "^1.0.1"
+    "emitter-listener": "^1.0.1",
+    "semver": "^5.3.0"
   },
   "devDependencies": {
-    "chai": "^4.0.2",
-    "mocha": "^3.0.2",
-    "sinon": "^2.3.5",
-    "sinon-chai": "^2.8.0",
-    "stack-chain": "^1.3.7",
+    "chai": "^4.1.0",
+    "mocha": "^3.4.2",
+    "sinon": "^2.3.8",
+    "sinon-chai": "^2.12.0",
     "superagent": "^3.5.2",
-    "tap": "^10.6.0",
-    "tap-mocha-reporter": "^3.0.5"
-  }
+    "tap": "^10.7.0",
+    "tap-mocha-reporter": "3.0.6"
+  },
+  "false": {}
 }

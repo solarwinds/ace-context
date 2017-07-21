@@ -16,7 +16,7 @@ describe('cls with http connections', function () {
   this.timeout(1000);
 
   let http = require('http');
-  let cls = require('../context');
+  let cls = require('../index');
 
   describe('client server', function clientServerTest() {
 

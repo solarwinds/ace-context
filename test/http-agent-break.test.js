@@ -5,7 +5,7 @@ const should = chai.should();
 
 const superagent = require('superagent');
 
-const cls = require('./../context');
+const cls = require('./../index');
 const http = require('http');
 
 const keepAlive = process.env.KEEP_ALIVE !== '0';

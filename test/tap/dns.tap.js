@@ -3,7 +3,7 @@
 var dns             = require('dns')
   , tap             = require('tap')
   , test            = tap.test
-  , createNamespace = require('./../../context.js').createNamespace
+  , createNamespace = require('./../../index.js').createNamespace
   ;
 
 test("continuation-local state with MakeCallback and DNS module", function (t) {
