@@ -422,6 +422,7 @@ function createNamespace(name) {
       }
 
       namespace._contexts.delete(currentUid);
+      namespace._contexts.delete(asyncId);
     }
   });
 
