@@ -6,7 +6,9 @@
       <script value="test" />
     </scripts>
     <node-interpreter value="project" />
-    <envs />
+    <envs>
+      <env name="DEBUG_CLS_HOOKED" value="1" />
+    </envs>
     <method />
   </configuration>
 </component>

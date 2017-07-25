@@ -1,6 +1,6 @@
 {
   "name": "cls-hooked",
-  "version": "4.2.0",
+  "version": "4.2.1",
   "description": "CLS using AsynWrap instead of async-listener - Node >= 4.7.0",
   "main": "index.js",
   "files": [
