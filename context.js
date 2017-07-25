@@ -421,7 +421,6 @@ function createNamespace(name) {
         debug2(`${indentStr}DESTROY (${name}) currentUid:${currentUid} asyncId:${asyncId} triggerId:${triggerId} active:${util.inspect(namespace.active, {showHidden:true, depth:2, colors:true})} context:${util.inspect(namespace._contexts.get(currentUid))}`);
       }
 
-      namespace._contexts.delete(currentUid);
       namespace._contexts.delete(asyncId);
     }
   });
