@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="nesting.tap.js" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="project" path-to-js-file="node_modules/tap/bin/run.js" application-parameters="test/nesting.tap.js -Rspec" working-dir="$PROJECT_DIR$">
+    <method />
+  </configuration>
+</component>

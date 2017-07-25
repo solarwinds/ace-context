@@ -1,0 +1,5 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="bind-emitter-multiple.tap.js" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="project" path-to-js-file="node_modules/tap/bin/run.js" application-parameters="test/bind-emitter-multiple.tap.js -Rspec" working-dir="$PROJECT_DIR$">
+    <method />
+  </configuration>
+</component>

@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="net-events.tap.js" type="NodeJSConfigurationType" factoryName="Node.js" path-to-node="project" path-to-js-file="node_modules/tap/bin/run.js" application-parameters="test\net-events.tap.js -Rspec" working-dir="$PROJECT_DIR$">
+    <envs>
+      <env name="DEBUG" value="1" />
+    </envs>
+    <method />
+  </configuration>
+</component>
