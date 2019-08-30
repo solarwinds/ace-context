@@ -17,6 +17,7 @@ test('continuation-local state with net connection', function(t) {
 
       server = net.createServer(function(socket) {
         t.equal(namespace.get('test'), 'newContextValue', 'state has been mutated');
+        namespace.bindEmitter(socket);
         socket.on('data', function() {
           t.equal(namespace.get('test'), 'newContextValue', 'state is still preserved');
           server.close();

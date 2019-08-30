@@ -23,6 +23,7 @@ describe('cls with net connection 2', function() {
         const server = net.createServer();
 
         server.on('connection', function OnServerConnection(socket) {
+            namespace.bindEmitter(socket);
             expect(namespace.get(keyName)).equal(TEST_VALUE, 'state has been mutated');
 
             socket.on('data', function OnServerSocketData(data) {

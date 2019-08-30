@@ -16,7 +16,7 @@ test("continuation-local state with zlib", function (t) {
     t.test("deflate", function (t) {
       namespace.run(function () {
         namespace.set('test', 42);
-        zlib.deflate(new Buffer("Goodbye World"), function (err) {
+        zlib.deflate(new Buffer.from("Goodbye World"), function (err) {
           if (err) throw err;
           t.equal(namespace.get('test'), 42, "mutated state was preserved");
           t.end();

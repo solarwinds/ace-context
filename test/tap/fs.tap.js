@@ -18,7 +18,7 @@ var FILENAME = '__testfile'
   ;
 
 function createFile(assert) {
-  var contents = new Buffer("UHOH")
+  var contents = Buffer.from("UHOH")
     , file = fs.openSync(FILENAME, 'w')
     , written = fs.writeSync(file, contents, 0, contents.length, 0)
     ;
@@ -468,8 +468,10 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
           t.equal(namespace.get('test'), 'unlink',
             "mutated state has persisted to fs.unlink's callback");
 
-          t.notOk(fs.exists(FILENAME), "file should be gone");
-          t.end();
+          fs.exists(FILENAME, function (exists) {
+            t.notOk(exists, "file should be gone");
+            t.end();
+          });
         });
       });
     });
@@ -702,7 +704,7 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
             "mutated state has persisted to fs.open's callback");
 
 
-          var contents = new Buffer(4);
+          var contents = Buffer.alloc(4);
           fs.readSync(file, contents, 0, 4, 0);
           t.equal(contents.toString(), 'UHOH', "contents are still available");
 
@@ -741,7 +743,7 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
         t.equal(namespace.get('test'), 'read', "state has been mutated");
 
         var file = fs.openSync(FILENAME, 'r')
-          , contents = new Buffer(4)
+          , contents = Buffer.alloc(4)
           ;
         fs.read(file, contents, 0, 4, 0, function (error) {
           t.notOk(error, "reading from the file shouldn't error");
@@ -766,7 +768,7 @@ test("continuation-local state with MakeCallback and fs module", function (t) {
         t.equal(namespace.get('test'), 'write', "state has been mutated");
 
         var file = fs.openSync(FILENAME, 'w')
-          , contents = new Buffer('yeap')
+          , contents = Buffer.from('yeap')
           ;
         fs.write(file, contents, 0, 4, 0, function (error) {
           t.notOk(error, "writing to the file shouldn't error");

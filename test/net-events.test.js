@@ -27,7 +27,7 @@ describe('cls with net connection', () => {
         namespace.set('test', 'newContextValue');
 
         server = net.createServer((socket) => {
-          //namespace.bindEmitter(socket);
+          namespace.bindEmitter(socket);
 
           testValue1 = namespace.get('test');
 
