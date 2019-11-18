@@ -45,9 +45,8 @@ Namespace.prototype.set = function set(key, value) {
 
   if (DEBUG_CLS_HOOKED === this.name) {
     const indentStr = this._indent;
-    //debug2(indentStr + 'CONTEXT-SET KEY:' + key + '=' + value + ' in ns:' + this.name + ' currentUid:' + currentUid + ' active:' + util.inspect(this.active, inspectOpts));
     const activeText = DEBUG_SHOW_ACTIVE ? ` active:${util.inspect(this.active, inspectOpts)}` : '';
-    debug2(`${indentStr}CONTEXT-SET KEY: ${key}=${value} in ns: ${this.name} currentUid:${currentUid}${activeText}`);
+    debug2(`${indentStr}~SET (context: active): ${key}=${value} currentUid:${currentUid}${activeText}`);
   }
 
   return value;
@@ -59,8 +58,7 @@ Namespace.prototype.get = function get(key) {
       const asyncHooksCurrentId = async_hooks.currentId();
       const triggerId = async_hooks.triggerAsyncId();
       const indentStr = this._indent;
-      //debug2(indentStr + 'CONTEXT-GETTING KEY NO ACTIVE NS:' + key + '=undefined' + ' (' + this.name + ') currentUid:' + currentUid + ' active:' + util.inspect(this.active, inspectOpts));
-      debug2(`${indentStr}CONTEXT-GETTING KEY NO ACTIVE NS: ${key}=undefined currentUid:${currentUid} asyncHooksCurrentId:${asyncHooksCurrentId} triggerId:${triggerId} len:${this._set.length}`);
+      debug2(`${indentStr}~GET (context: no-active) ${key}=undefined currentUid:${currentUid} asyncHooksCurrentId:${asyncHooksCurrentId} triggerId:${triggerId} len:${this._set.length}`);
     }
     return undefined;
   }
@@ -68,9 +66,8 @@ Namespace.prototype.get = function get(key) {
     const asyncHooksCurrentId = async_hooks.executionAsyncId();
     const triggerId = async_hooks.triggerAsyncId();
     const indentStr = this._indent;
-    //debug2(indentStr + 'CONTEXT-GETTING KEY:' + key + '=' + this.active[key] + ' (' + this.name + ') currentUid:' + //currentUid + ' active:' + util.inspect(this.active, inspectOpts));
     const activeText = DEBUG_SHOW_ACTIVE ? ` active:${util.inspect(this.active, inspectOpts)}` : '';
-    debug2(`${indentStr}CONTEXT-GETTING KEY: ${key}=${this.active[key]} currentUid:${currentUid} asyncHooksCurrentId:${asyncHooksCurrentId} triggerId:${triggerId} len:${this._set.length}${activeText}`);
+    debug2(`${indentStr}~GET (context: active): ${key}=${this.active[key]} currentUid:${currentUid} asyncHooksCurrentId:${asyncHooksCurrentId} triggerId:${triggerId} len:${this._set.length}${activeText}`);
   }
   return this.active[key];
 };
@@ -85,7 +82,7 @@ Namespace.prototype.createContext = function createContext() {
     const asyncHooksCurrentId = async_hooks.executionAsyncId();
     const triggerId = async_hooks.triggerAsyncId();
     const indentStr = this._indent;
-    debug2(`${indentStr}CONTEXT-CREATED Context: currentUid:${currentUid} asyncHooksCurrentId:${asyncHooksCurrentId} triggerId:${triggerId} len:${this._set.length} context:${util.inspect(context, inspectOpts)}`);
+    debug2(`${indentStr}~CREATE: currentUid:${currentUid} asyncHooksCurrentId:${asyncHooksCurrentId} triggerId:${triggerId} len:${this._set.length} context:${util.inspect(context, inspectOpts)}`);
   }
 
   return context;
@@ -101,7 +98,7 @@ Namespace.prototype.run = function run(fn) {
       const asyncHooksCurrentId = async_hooks.executionAsyncId();
       const indentStr = this._indent;
       const contextText = DEBUG_SHOW_CONTEXT ? ` context:${util.inspect(context)}` : '';
-      debug2(`${indentStr}CONTEXT-RUN BEGIN: currentUid:${currentUid} triggerId:${triggerId} asyncHooksCurrentId:${asyncHooksCurrentId} len:${this._set.length}${contextText}`);
+      debug2(`${indentStr}~RUN: currentUid:${currentUid} triggerId:${triggerId} asyncHooksCurrentId:${asyncHooksCurrentId} len:${this._set.length}${contextText}`);
     }
     fn(context);
     return context;
@@ -116,7 +113,7 @@ Namespace.prototype.run = function run(fn) {
       const asyncHooksCurrentId = async_hooks.executionAsyncId();
       const indentStr = this._indent;
       const contextText = DEBUG_SHOW_CONTEXT ? ` context:${util.inspect(context)}` : '';
-      debug2(`${indentStr}CONTEXT-RUN END: currentUid:${currentUid} triggerId:${triggerId} asyncHooksCurrentId:${asyncHooksCurrentId} len:${this._set.length}${contextText}`);
+      debug2(`${indentStr}~RUN-FINALLY: currentUid:${currentUid} triggerId:${triggerId} asyncHooksCurrentId:${asyncHooksCurrentId} len:${this._set.length}${contextText}`);
     }
     this.exit(context);
   }
@@ -145,13 +142,13 @@ Namespace.prototype.runPromise = function runPromise(fn) {
   }
 
   if (DEBUG_CLS_HOOKED === this.name) {
-    debug2('CONTEXT-runPromise BEFORE: (' + this.name + ') currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
+    debug2('~RUN-PROMISE-BEFORE: (' + this.name + ') currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
   }
 
   return promise
     .then(result => {
       if (DEBUG_CLS_HOOKED === this.name) {
-        debug2('CONTEXT-runPromise AFTER then: (' + this.name + ') currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
+        debug2('~RUN-PROMISE-THEN: (' + this.name + ') currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
       }
       this.exit(context);
       return result;
@@ -159,7 +156,7 @@ Namespace.prototype.runPromise = function runPromise(fn) {
     .catch(err => {
       err[ERROR_SYMBOL] = context;
       if (DEBUG_CLS_HOOKED === this.name) {
-        debug2('CONTEXT-runPromise AFTER catch: (' + this.name + ') currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
+        debug2('~RUN-PROMISE-CATCH: (' + this.name + ') currentUid:' + currentUid + ' len:' + this._set.length + ' ' + util.inspect(context));
       }
       this.exit(context);
       throw err;
@@ -198,7 +195,7 @@ Namespace.prototype.enter = function enter(context) {
     const triggerId = async_hooks.triggerAsyncId();
     const indentStr = this._indent;
     const contextText = DEBUG_SHOW_CONTEXT ? ` context:${util.inspect(context)}` : '';
-    debug2(`${indentStr}CONTEXT-ENTER: currentUid:${currentUid} triggerId:${triggerId} asyncHooksCurrentId:${asyncHooksCurrentId} len:${this._set.length}${contextText}`);
+    debug2(`${indentStr}~ENTER: currentUid:${currentUid} triggerId:${triggerId} asyncHooksCurrentId:${asyncHooksCurrentId} len:${this._set.length}${contextText}`);
   }
 
   this._set.push(this.active);
@@ -212,7 +209,7 @@ Namespace.prototype.exit = function exit(context) {
     const triggerId = async_hooks.triggerAsyncId();
     const indentStr = this._indent;
     const contextText = DEBUG_SHOW_CONTEXT ? ` context:${util.inspect(context)}` : '';
-    debug2(`${indentStr}CONTEXT-EXIT: currentUid:${currentUid} triggerId:${triggerId} asyncHooksCurrentId:${asyncHooksCurrentId} len:${this._set.length}${contextText}`);
+    debug2(`${indentStr}~EXIT: currentUid:${currentUid} triggerId:${triggerId} asyncHooksCurrentId:${asyncHooksCurrentId} len:${this._set.length}${contextText}`);
   }
 
   // Fast path for most exits that are at the top of the stack
@@ -293,7 +290,7 @@ function createNamespace(name) {
   assert.ok(name, 'namespace must be given a name.');
 
   if (DEBUG_CLS_HOOKED) {
-    debug2(`NS-CREATING NAMESPACE (${name})`);
+    debug2(`NS-CREATE-NAMESPACE (${name})`);
   }
   let namespace = new Namespace(name);
   namespace.id = currentUid;
@@ -450,7 +447,7 @@ function createNamespace(name) {
       }
     },
 
-    destroy(asyncId) {
+    destroy (asyncId) {
       currentUid = async_hooks.executionAsyncId();
       if (DEBUG_CLS_HOOKED === name) {
         const triggerId = async_hooks.triggerAsyncId();
@@ -461,6 +458,7 @@ function createNamespace(name) {
         debug2(`${indentStr}@DESTROY ${existText} currentUid:${currentUid} asyncId:${asyncId} triggerId:${triggerId}${activeText} context:${util.inspect(namespace._contexts.get(currentUid))}`);
       }
 
+      if (asyncId === 2071) debug2(`~KEYS: ${[...namespace._contexts.keys()]}`);
       namespace._contexts.delete(asyncId);
     },
     //promiseResolve (asyncId) {
