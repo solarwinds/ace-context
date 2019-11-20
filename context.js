@@ -9,11 +9,12 @@ const async_hooks = require('async_hooks');
 const CONTEXTS_SYMBOL = 'cls@contexts';
 const ERROR_SYMBOL = 'error@context';
 
-const DEBUG = false && process.env.DEBUG_CLS_HOOKED;
+const DEBUG = true && process.env.DEBUG_CLS_HOOKED;
 const DEBUG_SHOW_ACTIVE = false;
 const DEBUG_SHOW_CONTEXT = false;
 const PREFIX = '<cls>';
 const DBG_HOOKS = true;
+const DBG_EXCLUDE_BOOT = true;
 
 const graph = {
   inits: {}
@@ -41,7 +42,9 @@ function Namespace(name) {
   this._indent = '';
 }
 
-Namespace.prototype.getGraph = function getGraph () {return graph};
+Namespace.prototype.getGraph = function getGraph () {
+  return graph;
+};
 
 Namespace.prototype.set = function set(key, value) {
   if (!this.active) {
@@ -59,25 +62,86 @@ Namespace.prototype.set = function set(key, value) {
   return value;
 };
 
-Namespace.prototype.get = function get(key) {
-  if (!this.active) {
-    if (DEBUG === this.name) {
-      const hooksCurID = async_hooks.currentId();
-      const triggerId = async_hooks.triggerAsyncId();
+function getDebugInfo () {
+  const info = {
+    hooksCurID: async_hooks.executionAsyncId(),
+    triggerId: async_hooks.triggerAsyncId(),
+  };
+  info.show = !DBG_EXCLUDE_BOOT || (info.hooksCurID !== 1 && info.triggerId !== 1);
+
+  return info;
+}
+
+//*
+Namespace.prototype.get = function get (key) {
+  if (DEBUG === this.name) {
+    const info = getDebugInfo();
+    if (info.show) {
+      const {hooksCurID, triggerId} = info;
+      const n = this._set.length;
       const indentStr = this._indent;
-      debug2(`${indentStr}~GET (context: no-active) ${key}=undefined currentUid:${currentUid} hooksCurID:${hooksCurID} triggerId:${triggerId} n:${this._set.length}`);
+
+      let value = undefined;
+      let no = 'no-';
+      let active = '';
+      if (this.active) {
+        value = this.active[key];
+        no = '';
+        active = DEBUG_SHOW_ACTIVE ? ` active:${util.inspect(this.active, inspectOpts)}` : '';
+      }
+      debug2(`${indentStr}~GET (context: ${no}active): ${key}=${value} currentUid:${currentUid} hooksCurID:${hooksCurID} triggerId:${triggerId} n:${n}${active}`);
+    }
+  }
+
+  return this.active && this.active[key];
+};
+// */
+
+/*
+Namespace.prototype.get = function get (key) {
+  if (false && !this.active) {
+    if (DEBUG === this.name) {
+      //const hooksCurID = async_hooks.currentId();
+      //const triggerId = async_hooks.triggerAsyncId();
+      //if (!DBG_EXCLUDE_BOOT || (hooksCurID !== 1 && triggerId !== 1)) {
+      //const {show, hooksCurID, triggerId} = getDebugInfo();
+      const info = getDebugInfo();
+      if (info.show) {
+        const {hooksCurID, triggerId} = info;
+        const indentStr = this._indent;
+        debug2(`${indentStr}~GET (context: no-active) ${key}=undefined currentUid:${currentUid} hooksCurID:${hooksCurID} triggerId:${triggerId} n:${this._set.length}`);
+      }
     }
     return undefined;
   }
+
   if (DEBUG === this.name) {
-    const hooksCurID = async_hooks.executionAsyncId();
-    const triggerId = async_hooks.triggerAsyncId();
-    const indentStr = this._indent;
-    const activeText = DEBUG_SHOW_ACTIVE ? ` active:${util.inspect(this.active, inspectOpts)}` : '';
-    debug2(`${indentStr}~GET (context: active): ${key}=${this.active[key]} currentUid:${currentUid} hooksCurID:${hooksCurID} triggerId:${triggerId} n:${this._set.length}${activeText}`);
+    //const hooksCurID = async_hooks.executionAsyncId();
+    //const triggerId = async_hooks.triggerAsyncId();
+    //const {show, hooksCurID, triggerId} = getDebugInfo();
+    const info = getDebugInfo();
+    if (info.show) {
+      const {hooksCurID, triggerId} = info;
+      let activeText = '';
+      let value;
+      let no = 'no-';
+      ///////////////////
+      if (this.active) {
+        activeText = DEBUG_SHOW_ACTIVE ? ` active:${util.inspect(this.active, inspectOpts)}` : '';
+        value = this.active[key];
+        no = '';
+      }
+      ///////////////////
+      const indentStr = this._indent;
+      const n = this._set.length;
+      //debug2(`${indentStr}~GET (context: active): ${key}=${this.active[key]} currentUid:${currentUid} hooksCurID:${hooksCurID} triggerId:${triggerId} n:${n}${activeText}`);
+      debug2(`${indentStr}~GET (context: ${no}active): ${key}=${value} currentUid:${currentUid} hooksCurID:${hooksCurID} triggerId:${triggerId} n:${n}${activeText}`);
+    }
   }
-  return this.active[key];
+  return !this.active ? undefined : this.active[key];
+  //return this.active[key];
 };
+// */
 
 Namespace.prototype.createContext = function createContext() {
   // Prototype inherit existing context if created a new child context within existing context.
@@ -340,7 +404,7 @@ function createNamespace(name) {
         } else {
           graph.inits[asyncId] = new Map();
           graph.inits[asyncId].set(active, {count: 1});
-          process._rawDebug('new init', active);
+          //process._rawDebug('new init', active);
         }
       }
 
