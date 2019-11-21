@@ -24,6 +24,9 @@ const graph = {
     afterNoInit: [],
     destroyNoInit: [],
   },
+  stats: {
+    maxSetLength: 0,
+  }
 };
 
 let currentUid = -1;
@@ -93,7 +96,7 @@ Namespace.prototype.get = function get (key) {
 };
 
 
-Namespace.prototype.createContext = function createContext() {
+Namespace.prototype.createContext = function createContext () {
   // Prototype inherit existing context if creating a new child context within existing context.
   let context = Object.create(this.active ? this.active : Object.prototype);
   context._ns_name = this.name;
@@ -163,15 +166,13 @@ Namespace.prototype.runPromise = function runPromise(fn) {
   }
 
   if (DEBUG === this.name) {
-    debug2(`~RUN-PROMISE-BEFORE: (${this.name}) currentUid: ${currentUid} n: ${this._set.length} ${util.inspect(context)}`);
-    //debug2('~RUN-PROMISE-BEFORE: (' + this.name + ') currentUid:' + currentUid + ' n:' + this._set.length + ' ' + util.inspect(context));
+    debug2(`~RUN-PROMISE-BEFORE: (${this.name}) currentUid: ${currentUid} ${util.inspect(context)}`);
   }
 
   return promise
     .then(result => {
       if (DEBUG === this.name) {
-        debug2(`~RUN-PROMISE-THEN: (${this.name}) currentUid: ${currentUid} n: ${this._set.length} ${util.inspect(context)}`);
-        //debug2('~RUN-PROMISE-THEN: (' + this.name + ') currentUid:' + currentUid + ' n:' + this._set.length + ' ' + util.inspect(context));
+        debug2(`~RUN-PROMISE-THEN: (${this.name}) currentUid: ${currentUid} ${util.inspect(context)}`);
       }
       this.exit(context);
       return result;
@@ -179,8 +180,7 @@ Namespace.prototype.runPromise = function runPromise(fn) {
     .catch(err => {
       err[ERROR_SYMBOL] = context;
       if (DEBUG === this.name) {
-        debug2(`~RUN-PROMISE-CATCH: (${this.name}) currentUid: ${currentUid} n: ${this._set.length} ${util.inspect(context)}`);
-        //debug2('~RUN-PROMISE-CATCH: (' + this.name + ') currentUid:' + currentUid + ' n:' + this._set.length + ' ' + util.inspect(context));
+        debug2(`~RUN-PROMISE-CATCH: (${this.name}) currentUid: ${currentUid} ${util.inspect(context)}`);
       }
       this.exit(context);
       throw err;
@@ -216,6 +216,9 @@ Namespace.prototype.enter = function enter(context) {
   assert.ok(context, 'context must be provided for entering');
 
   this._set.push(this.active);
+  if (this._set.length > graph.stats.maxSetLength) {
+    graph.stats.maxSetLength = this._set.length;
+  }
   this.active = context;
 
   if (DEBUG === this.name) {
@@ -230,6 +233,7 @@ Namespace.prototype.enter = function enter(context) {
 Namespace.prototype.exit = function exit(context) {
   assert.ok(context, 'context must be provided for exiting');
 
+  // helper
   const debug = how => {
     const {eaID, triggerId} = getDebugInfo();
     //const execAsyncID = async_hooks.executionAsyncId();
@@ -586,7 +590,8 @@ const valueFormatters = {
   topSpan: value => value && `${value.name}`,
   lastSpan: value => value && `${value.name}`,
   lastEvent: value => value && `${value.Layer}:${value.Label} ${value.event.toString(1)}`,
-}
+};
+
 function fmtSetGet (key, value) {
   if (key in valueFormatters) {
     return `${key}=${valueFormatters[key](value)}`;
@@ -604,7 +609,8 @@ function longContext (ns, context) {
   });
   const stext = ns._set.map(c => fmtContext(c));
 
-  return `\n  context:${fmtContext(context)},\n  _contexts:${ctext.join('\n    ')},\n  _set:${stext}`;
+  const sep = '\n    ';
+  return `\n  context:${fmtContext(context)},\n  _contexts:${ctext.join(sep)},\n  _set(${stext.length}):${stext.join(sep)}`;
 }
 
 function shortContext (ns) {
