@@ -33,10 +33,10 @@ describe('multiple namespaces handles them correctly', () => {
             process.nextTick(() => {
 
               test1Val = ns1.get('name');
-              process._rawDebug(util.inspect(ns1), true);
+              //process._rawDebug(util.inspect(ns1), true);
 
               test2Val = ns2.get('name');
-              process._rawDebug(util.inspect(ns2), true);
+              //process._rawDebug(util.inspect(ns2), true);
 
               ns1.set('name', 'bob');
               ns2.set('name', 'alice');

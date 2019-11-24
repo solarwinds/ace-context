@@ -88,12 +88,12 @@ test("event emitters bound to CLS context", function (t) {
   t.test("handler registered out of context, emit out of context", function (t) {
     t.plan(1);
 
-    var n  = cls.createNamespace('out')
-      , ee = new EventEmitter()
-      ;
+    const n  = cls.createNamespace('out');
+    const ee = new EventEmitter();
 
     ee.on('event', function () {
-      t.equal(n.get('value'), undefined, "no context.");
+      const v = n.get('value');
+      t.equal(n.get('value'), undefined, "no context." + v);
       cls.destroyNamespace('out');
     });
 

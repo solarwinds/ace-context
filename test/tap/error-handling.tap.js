@@ -1,9 +1,8 @@
 'use strict';
 
-var test   = require('tap').test
-  , cls    = require('../../index.js')
-  , domain = require('domain')
-  ;
+const test = require('tap').test;
+const cls = require('../../index.js');
+const domain = require('domain');
 
 test("continuation-local storage glue with a throw in the continuation chain",
      function (t) {

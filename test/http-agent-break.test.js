@@ -1,7 +1,8 @@
 'use strict';
 
 const chai = require('chai');
-const should = chai.should();
+const expect = chai.expect;
+const semver = require('semver');
 
 const superagent = require('superagent');
 
@@ -30,8 +31,7 @@ describe('cls with http Agent', () => {
 
     it('should retain context during first', (done)=> {
       doClsAction(123, () => {
-        should.exist(innerRequestContextValue)
-        innerRequestContextValue.should.equal(123);
+        expect(innerRequestContextValue).equal(123);
         done();
       });
     });
@@ -39,8 +39,7 @@ describe('cls with http Agent', () => {
 
     it('should retain context during second', (done)=> {
       doClsAction(456, () => {
-        should.exist(innerRequestContextValue)
-        innerRequestContextValue.should.equal(456);
+        expect(innerRequestContextValue).equal(456);
         done();
       });
     });
@@ -67,7 +66,11 @@ describe('cls with http Agent', () => {
     function httpGetRequest(cb) {
 
       //https://github.com/othiym23/node-continuation-local-storage/issues/71
-      namespace.bindEmitter(superagent.Request.super_.super_.prototype);
+      if (semver.gt(process.version, '12.0.0')) {
+        namespace.bindEmitter(superagent.Request.super_.Readable.prototype);
+      } else {
+        namespace.bindEmitter(superagent.Request.super_.super_.prototype);
+      }
 
       var req = superagent['get']('http://www.google.com');
 
