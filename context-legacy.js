@@ -8,6 +8,21 @@ const asyncHook = require('async-hook-jl');
 const CONTEXTS_SYMBOL = 'cls@contexts';
 const ERROR_SYMBOL = 'error@context';
 
+// keep in sync with context even though not functional here.
+const metrics = {
+  hooks: {},
+  errors: {
+    beforeNoInit: [],
+    afterNoInit: [],
+    destroyNoInit: [],
+  },
+  stats: {
+    maxSetLength: 0,
+    slowExits: 0,
+    fastExits: 0,
+  }
+};
+
 //const trace = [];
 
 const invertedProviders = [];
@@ -37,7 +52,11 @@ function Namespace(name) {
   this._contexts = new Map();
 }
 
-Namespace.prototype.set = function set(key, value) {
+Namespace.prototype.getMetrics = function getMetrics () {
+  return metrics;
+};
+
+Namespace.prototype.set = function set (key, value) {
   if (!this.active) {
     throw new Error('No context available. ns.run() or ns.bind() must be called first.');
   }
@@ -50,7 +69,7 @@ Namespace.prototype.set = function set(key, value) {
   return value;
 };
 
-Namespace.prototype.get = function get(key) {
+Namespace.prototype.get = function get (key) {
   if (!this.active) {
     if (DEBUG_CLS_HOOKED) {
       debug2('    GETTING KEY:' + key + '=undefined' + ' ' + this.name + ' uid:' + currentUid + ' active:' +
@@ -65,13 +84,9 @@ Namespace.prototype.get = function get(key) {
   return this.active[key];
 };
 
-Namespace.prototype.createContext = function createContext() {
-  if (DEBUG_CLS_HOOKED) {
-    debug2('   CREATING Context: ' + this.name + ' uid:' + currentUid + ' len:' + this._set.length + ' ' + ' active:' +
-      util.inspect(this.active, true, 2, true));
-  }
-
-  let context = Object.create(this.active ? this.active : Object.prototype);
+Namespace.prototype.createContext = function createContext (options = {}) {
+  // Prototype inherit existing context if creating a new child context within existing context.
+  let context = Object.create((this.active && !options.newContext) ? this.active : Object.prototype);
   context._ns_name = this.name;
   context.id = currentUid;
 
@@ -83,8 +98,8 @@ Namespace.prototype.createContext = function createContext() {
   return context;
 };
 
-Namespace.prototype.run = function run(fn) {
-  let context = this.createContext();
+Namespace.prototype.run = function run(fn, options) {
+  let context = this.createContext(options);
   this.enter(context);
   try {
     if (DEBUG_CLS_HOOKED) {
@@ -122,8 +137,8 @@ Namespace.prototype.runAndReturn = function runAndReturn(fn) {
  * @param {function} fn
  * @returns {*}
  */
-Namespace.prototype.runPromise = function runPromise(fn) {
-  let context = this.createContext();
+Namespace.prototype.runPromise = function runPromise(fn, options) {
+  let context = this.createContext(options);
   this.enter(context);
 
   let promise = fn(context);
