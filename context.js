@@ -102,7 +102,7 @@ Namespace.prototype.set = function set(key, value) {
   if (this.debug) {
     const indentStr = this._indent;
     const at = activeContext(this);
-    debug2(`${indentStr}~SET (context: active): ${fmtSetGet(key, value)} currentUid:${currentUid}${at}`);
+    debug2(`${indentStr}~SET (context: active): ${this.fmtSetGet(key, value)} currentUid:${currentUid}${at}`);
   }
 
   return value;
@@ -123,7 +123,7 @@ Namespace.prototype.get = function get (key) {
         no = '';
       }
       const ctxText = getContextText(this, this.active);
-      debug2(`${indentStr}~GET (context: ${no}active): ${fmtSetGet(key, value)} currentUid:${currentUid} hooksCurID:${eaID} triggerId:${triggerId} ${ctxText}`);
+      debug2(`${indentStr}~GET (context: ${no}active): ${this.fmtSetGet(key, value)} currentUid:${currentUid} hooksCurID:${eaID} triggerId:${triggerId} ${ctxText}`);
     }
   }
 
@@ -150,7 +150,7 @@ Namespace.prototype.createContext = function createContext (options = {}) {
     const flag = (options.newContext || !this.active) ? '-NEW' : '';
     const {eaID, triggerId} = getDebugInfo();
     const indentStr = this._indent;
-    const ctxText = fmtContext(context);
+    const ctxText = this.fmtContext(context);
     debug2(`${indentStr}~CREATE${flag}: currentUid:${currentUid} execAsyncId:${eaID} triggerId:${triggerId} context:${ctxText}`);
   }
 
@@ -652,9 +652,9 @@ function reset() {
 process.namespaces = {};
 
 //
-// TODO BAM allow these formatters to be options passed to the namespace constructor.
+// Namespace-specific formatters.
 //
-function fmtContext (ctx) {
+Namespace.prototype.fmtContext = function fmtContext (ctx) {
   if (!ctx || !ctx.lastEvent) {
     if (typeof ctx === 'function') {
       return 'function()';
@@ -662,29 +662,44 @@ function fmtContext (ctx) {
     return util.inspect(ctx, inspectOpts);
   }
   return `${ctx.lastEvent.Layer}:${ctx.lastEvent.Label} ${ctx.lastEvent.event.toString(1)}`;
-}
+};
 
-const valueFormatters = {
+Namespace.prototype.valueFormatters = {
   topSpan: value => value && `${value.name}`,
   lastSpan: value => value && `${value.name}`,
   lastEvent: value => value && `${value.Layer}:${value.Label} ${value.event.toString(1)}`,
 };
 
-function fmtSetGet (key, value) {
-  if (key in valueFormatters) {
-    return `${key}=${valueFormatters[key](value)}`;
+Namespace.prototype.fmtSetGet = function fmtSetGet (key, value) {
+  if (key in this.valueFormatters) {
+    return `${key}=${this.valueFormatters[key](value)}`;
   }
   return `${key}=${util.inspect(value)}`;
-}
+};
 
 function getContextText (ns, context) {
-  if (ns.dbgShowContext === 'long') {
+  if (ns.dbgShowContext !== 'short') {
     return longContext(ns, context);
   }
   return shortContext(ns);
 }
 
-// look up the id
+Namespace.prototype.shortContext = function () {
+  const ckeys = [...this._contexts.keys()].filter(k => {
+    const lastEvent = this._contexts.get(k).lastEvent;
+    return lastEvent && lastEvent.Layer === 'restify' && lastEvent.Label === 'exit';
+  });
+  // map contexts to their ids.
+  const skeys = this._set.filter(c => c).map(c => c.id);
+
+  return `c[${ckeys.join(',')}], s[${skeys.join(',')}]`;
+};
+
+//
+// formatters independent of the namespace
+//
+
+// find the id to preface the context with.
 function activeContext (ns, active) {
   if (!ns || !ns._contexts || !ns._set) {
     return 'bad-namespace';
@@ -704,9 +719,10 @@ function activeContext (ns, active) {
     }
   }
   const t = active === ns.active ? '(active)' : '';
-  return `${ctxID}${t}=>${fmtContext(context)}`;
+  return `${ctxID}${t}=>${ns.fmtContext(context)}`;
 }
 
+// the long form context
 function longContext (ns, context) {
   if (!ns || !ns._contexts || !ns._set) {
     return 'bad-namespace';
@@ -717,26 +733,21 @@ function longContext (ns, context) {
     if (ctx === context) {
       ctxKey = `${k}=>`;
     }
-    return `${k} => ${fmtContext(ctx)}`;
+    return `${k} => ${ns.fmtContext(ctx)}`;
   });
-  const stext = ns._set.map(c => fmtContext(c));
+  const stext = ns._set.map(c => ns.fmtContext(c));
 
   const sep = '\n    ';
-  return `\n  context:${ctxKey}${fmtContext(context)},\n  _contexts:${ctext.join(sep)},\n  _set(${stext.length}):${stext.join(sep)}`;
+  return `\n  context:${ctxKey}${ns.fmtContext(context)},\n  _contexts:${ctext.join(sep)},\n  _set(${stext.length}):${stext.join(sep)}`;
 }
 
+// short form context is always namespace-specific.
 function shortContext (ns) {
   if (!ns || !ns._contexts || !ns._set) {
     return 'bad-namespace';
   }
-  const ckeys = [...ns._contexts.keys()].filter(k => {
-    const lastEvent = ns._contexts.get(k).lastEvent;
-    return lastEvent && lastEvent.Layer === 'restify' && lastEvent.Label === 'exit';
-  });
-  // map contexts to their ids.
-  const skeys = ns._set.filter(c => c).map(c => c.id);
 
-  return `c[${ckeys.join(',')}], s[${skeys.join(',')}]`;
+  return ns.shortContext();
 }
 
 // placeholder in case it's useful to format resources (TickObject, UDPWRAP, etc.)
@@ -745,13 +756,8 @@ function fmtResource (type, resource) {
   return '';
 }
 
-//const fs = require('fs');
 function debug2(...args) {
   process._rawDebug(PREFIX, `${util.format(...args)}`);
-  //if (DEBUG) {
-  //  //fs.writeSync(1, `${util.format(...args)}\n`);
-  //  process._rawDebug(PREFIX, `${util.format(...args)}`);
-  //}
 }
 
 
