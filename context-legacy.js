@@ -302,7 +302,7 @@ function createNamespace(name) {
   namespace.id = currentUid;
 
   asyncHook.addHooks({
-    init(uid, handle, provider, parentUid, parentHandle) {
+    init(uid, handle, provider, parentUid, _parentHandle) {
       //parentUid = parentUid || currentUid;  // Suggested usage but appears to work better for tracing modules.
       currentUid = uid;
 
@@ -332,10 +332,8 @@ function createNamespace(name) {
         }
 
         namespace.enter(context);
-      } else {
-        if (DEBUG_CLS_HOOKED) {
-          debug2(' PRE MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
-        }
+      } else if (DEBUG_CLS_HOOKED) {
+        debug2(' PRE MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
       }
     },
     post(uid, handle) {
@@ -348,10 +346,8 @@ function createNamespace(name) {
         }
 
         namespace.exit(context);
-      } else {
-        if (DEBUG_CLS_HOOKED) {
-          debug2(' POST MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
-        }
+      } else if (DEBUG_CLS_HOOKED) {
+        debug2(' POST MISSING CONTEXT ' + name + ' uid:' + uid + ' handle:' + getFunctionName(handle));
       }
     },
     destroy(uid) {
@@ -400,15 +396,6 @@ function debug2(msg) {
     process._rawDebug(msg);
   }
 }
-
-
-/*function debug(from, ns) {
- process._rawDebug('DEBUG: ' + util.inspect({
- from: from,
- currentUid: currentUid,
- context: ns ? ns._contexts.get(currentUid) : 'no ns'
- }, true, 2, true));
- }*/
 
 
 function getFunctionName(fn) {
