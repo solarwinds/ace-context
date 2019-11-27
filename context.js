@@ -12,6 +12,29 @@ const ERROR_SYMBOL = 'error@context';
 const PREFIX = '<cls>';
 const DBG_EXCLUDE_BOOT = true;
 
+// make this directly accessible
+const stats = {
+  maxSetLength: 0,              // maximum number of pushed contexts
+  slowExits: 0,                 // count of slow path exits (not top of stack)
+  fastExits: 0,                 // count of fast path exits (top of stack)
+
+  totalContextsCreated: 0,
+  activeContexts: 0,
+  // <debugging root contexts>
+  //activeCounts: new Map(),
+  //rootContextSwitches: 0,
+  //rootContextSwitchEnters: 0,
+  //rootContextSwitchExits: 0,
+  //transitions: [],              // testing only - a lot of data
+  // </debugging root contexts>
+
+  // raw counts for each async_hooks callback
+  inits: 0,
+  befores: 0,
+  afters: 0,
+  destroys: 0,
+};
+
 const metrics = {
   hooks: {},
   errors: {
@@ -19,11 +42,7 @@ const metrics = {
     afterNoInit: [],
     destroyNoInit: [],
   },
-  stats: {
-    maxSetLength: 0,
-    slowExits: 0,
-    fastExits: 0,
-  }
+  stats,
 };
 
 let currentUid = -1;
@@ -64,7 +83,13 @@ function Namespace(name, options = {}) {
 }
 
 Namespace.prototype.getMetrics = function getMetrics () {
-  return metrics;
+  metrics.stats.rootContextSwitches = metrics.stats.rootContextSwitchEnters + metrics.stats.rootContextSwitchExits;
+  // make copies so the caller can fiddle with the returned object.
+  const lmetrics = Object.assign({}, metrics);
+  lmetrics.hooks = Object.assign({}, metrics.hooks);
+  lmetrics.errors = Object.assign({}, metrics.errors);
+  lmetrics.stats = Object.assign({}, metrics.stats);
+  return lmetrics;
 };
 
 Namespace.prototype.set = function set(key, value) {
@@ -110,12 +135,19 @@ Namespace.prototype.get = function get (key) {
 //
 Namespace.prototype.createContext = function createContext (options = {}) {
   // Prototype inherit existing context if creating a new child context within existing context.
-  let context = Object.create((this.active && !options.newContext) ? this.active : Object.prototype);
+  let context;
+  if (options.newContext || !this.active) {
+    stats.totalContextsCreated += 1;
+    context = Object.create({_id: stats.totalContextsCreated});
+  } else {
+    context = Object.create(this.active);
+  }
+
   context._ns_name = this.name;
   context.id = currentUid;
 
   if (this.debug) {
-    const flag = options.newContext ? '-NEW' : '';
+    const flag = (options.newContext || !this.active) ? '-NEW' : '';
     const {eaID, triggerId} = getDebugInfo();
     const indentStr = this._indent;
     const ctxText = fmtContext(context);
@@ -228,9 +260,25 @@ Namespace.prototype.bind = function bindFactory(fn, context) {
 Namespace.prototype.enter = function enter(context) {
   assert.ok(context, 'context must be provided for entering');
 
+  // if entering a new context increment the active contexts and count how many times that number
+  // of active contexts has been occurred.
+  //let root = ''
+  //let info = null;
+  //if (context.__proto__.hasOwnProperty('_id')) {
+  //  stats.activeContexts += 1;
+  //  const activeContexts = stats.activeContexts;
+  //  stats.activeCounts[activeContexts] = (stats.activeCounts[stats.activeContexts] || 0) + 1;
+  //  if (this.active && this.active._id !== context._id) {
+  //    stats.rootContextSwitchEnters += 1;
+  //    root = ` (${this.active._id}=>${context._id})`
+  //  }
+  //}
+  //info = this.active ? `${this.active._id}:${this.active.test}-${this.active.d}` : null
+  //stats.transitions.push(`e${root} ${info} => ${context._id}:${context.test}`)
+
   this._set.push(this.active);
-  if (this._set.length > metrics.stats.maxSetLength) {
-    metrics.stats.maxSetLength = this._set.length;
+  if (this._set.length > stats.maxSetLength) {
+    stats.maxSetLength = this._set.length;
   }
   this.active = context;
 
@@ -246,11 +294,15 @@ Namespace.prototype.enter = function enter(context) {
 Namespace.prototype.exit = function exit(context) {
   assert.ok(context, 'context must be provided for exiting');
 
+  // if exiting a root context then decrement the active contexts.
+  //if (context.__proto__ === Object.prototype) {
+  //if (context.__proto__.hasOwnProperty('_id')) {
+  //  stats.activeContexts -= 1;
+  //}
+
   // helper
   const debug = how => {
     const {eaID, triggerId} = getDebugInfo();
-    //const execAsyncID = async_hooks.executionAsyncId();
-    //const triggerId = async_hooks.triggerAsyncId();
     const indentStr = this._indent;
     const ctxText = getContextText(this, context);
     debug2(`${indentStr}~EXIT-${how}: currentUid:${currentUid} triggerId:${triggerId} execAsyncID:${eaID} ${ctxText}`);
@@ -260,8 +312,17 @@ Namespace.prototype.exit = function exit(context) {
   // Fast path for most exits that are at the top of the stack
   if (this.active === context) {
     assert.ok(this._set.length, 'can\'t remove top context');
+    //const previousContext = this._set[this._set.length - 1];
+    //let root = ''
+    //let info = null;
+    //if (previousContext && previousContext._id !== context._id) {
+    //  stats.rootContextSwitchExits += 1;
+    //  root = ` (${context._id}=>${previousContext._id})`
+    //}
+    //info = previousContext ? `${previousContext._id}:${previousContext.test}-${previousContext.d}` : null
+    //stats.transitions.push(`x${root} ${context._id}:${context.test} => ${info}`)
     this.active = this._set.pop();
-    metrics.stats.fastExits += 1;
+    stats.fastExits += 1;
     if (this.debug) {
       debug('fast');
     }
@@ -278,7 +339,7 @@ Namespace.prototype.exit = function exit(context) {
     assert.ok(index >= 0, 'context not currently entered; can\'t exit. \n' + util.inspect(this) + '\n' + util.inspect(context));
   } else {
     assert.ok(index, 'can\'t remove top context');
-    metrics.stats.slowExits += 1;
+    stats.slowExits += 1;
     this._set.splice(index, 1);
     if (this.debug) {
       debug('slow');
@@ -350,6 +411,7 @@ function createNamespace(name, options = {}) {
 
   const hook = async_hooks.createHook({
     init (asyncId, type, triggerId, resource) {
+      stats.inits += 1;
       const eaID = currentUid = async_hooks.executionAsyncId();
 
       //CHAIN Parent's Context onto child if none exists. This is needed to pass net-events.spec
@@ -438,6 +500,7 @@ function createNamespace(name, options = {}) {
     },
 
     before (asyncId) {
+      stats.befores += 1;
       currentUid = async_hooks.executionAsyncId();
       let context;
 
@@ -483,6 +546,7 @@ function createNamespace(name, options = {}) {
     },
 
     after (asyncId) {
+      stats.afters += 1;
       currentUid = async_hooks.executionAsyncId();
       let context; // = namespace._contexts.get(currentUid);
 
@@ -527,6 +591,7 @@ function createNamespace(name, options = {}) {
     },
 
     destroy (asyncId) {
+      stats.destroys += 1;
       currentUid = async_hooks.executionAsyncId();
 
       if (namespace.captureHooks) {
