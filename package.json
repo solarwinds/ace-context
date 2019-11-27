@@ -1,7 +1,7 @@
 {
-  "name": "cls-hooked",
-  "version": "4.2.2",
-  "description": "CLS using AsynWrap instead of async-listener - Node >= 4.7.0",
+  "name": "hooks-context",
+  "version": "5.0.0",
+  "description": "CLS-like context using async_hooks for node >= 8.0.0",
   "main": "index.js",
   "files": [
     "index.js",
@@ -12,11 +12,11 @@
     "test": "mocha test/*.js & tap test/tap/*.tap.js",
     "test-mocha": "mocha test/*.js",
     "test-tap": "tap test/tap/*.tap.js",
-    "debug": "node --nolazy --debug-brk=5858 "
+    "debug": "node --nolazy --inspect-brk=5858 "
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/jeff-lewis/cls-hooked.git"
+    "url": "https://github.com/bmacnaughton/cls-hooked.git"
   },
   "keywords": [
     "threading",
@@ -27,7 +27,8 @@
   "contributors": [
     "Tim Caswell <tim@creationix.com>",
     "Forrest L Norvell <ogd@aoaioxxysz.net>",
-    "Jeff Lewis <jlewis@streetconnect.com>"
+    "Jeff Lewis <jlewis@streetconnect.com>",
+    "Bruce A. MacNaughton <bmacnaughton@gmail.com>"
   ],
   "license": "BSD-2-Clause",
   "engineStrict": false,
