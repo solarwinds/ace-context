@@ -11,7 +11,8 @@
     "no-underscore-dangle": 0,
     "no-unused-vars": [2, {
       "vars": "all",
-      "args": "after-used"
+      "args": "after-used",
+      "argsIgnorePattern": "^_"
     }],
     "no-use-before-define": [2, "nofunc"],
     "quotes": 0,
