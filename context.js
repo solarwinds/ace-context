@@ -79,6 +79,11 @@ function Namespace(name, options = {}) {
   this.dbgShowActive = options.debug.showActive;
   this.dbgShowContext = options.debug.showContext;
   this.dbgShowBoot = options.debug.showBoot;
+
+  // options.captureHooks - capture hook counts for inits, befores, afters, and destroys.
+  // one object with 4 properties is created for each asyncID so this is only suitable
+  // for use in a reasonably short, limited context like a single test. e.g. the restify
+  // probe test only has three tests and will generate 7300 lines of output.
   this.captureHooks = options.captureHooks;
 }
 
