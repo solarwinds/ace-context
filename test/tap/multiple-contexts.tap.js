@@ -32,15 +32,15 @@ test("continuation-local state with timers", function (t) {
 
       function exitIfDone () {
         if (!xid && !yid && !zid) {
-          const metrics = ns.getMetrics();
-          contextSwitches = metrics.stats.rootContextSwitches;
+          //const metrics = ns.getMetrics();
+          //contextSwitches = metrics.stats.rootContextSwitches;
 
-          process.on('exit', function () {
-            const metrics = ns.getMetrics();
-            contextSwitches = metrics.stats.rootContextSwitches;
-            //const counts = uniqueItemCounts(metrics.stats.transitions);
-            //process._rawDebug(util.format(counts))
-          });
+          //process.on('exit', function () {
+          //  const metrics = ns.getMetrics();
+          //  contextSwitches = metrics.stats.rootContextSwitches;
+          //  const counts = uniqueItemCounts(metrics.stats.transitions);
+          //  process._rawDebug(util.format(counts))
+          //});
           t.end();
         }
       }
