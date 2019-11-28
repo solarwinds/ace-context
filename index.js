@@ -8,7 +8,7 @@ const semver = require('semver');
  * Node < v8 - uses AsyncWrap and async-hooks-jl
  * Node >= v8 - uses native async-hooks
  */
-if (process && semver.gte(process.versions.node, '8.0.0')) {
+if (process && semver.gte(process.versions.node, '8.2.1')) {
   module.exports = require('./context');
 } else {
   module.exports = require('./context-legacy');
