@@ -73,7 +73,7 @@ function Namespace(name, options = {}) {
 
   this.debug = !!options.debug;
   if (typeof options.debug !== 'object') {
-    options = {debug: {}};
+    options.debug = {};
   }
   this.prefix = options.debug.prefix || '<cls>';
   this.dbgShowActive = options.debug.showActive;
