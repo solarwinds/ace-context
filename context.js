@@ -193,11 +193,11 @@ Namespace.prototype.run = function run(fn, options) {
   }
 };
 
-Namespace.prototype.runAndReturn = function runAndReturn(fn) {
+Namespace.prototype.runAndReturn = function runAndReturn(fn, options) {
   let value;
   this.run(function (context) {
     value = fn(context);
-  });
+  }, options);
   return value;
 };
 
