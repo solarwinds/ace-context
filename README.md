@@ -1,33 +1,54 @@
-[![NPM](https://nodei.co/npm/cls-hooked.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cls-hooked/)
+<!-- [![NPM](https://nodei.co/npm/cls-hooked.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/cls-hooked/) -->
 
-[![Build Status](https://travis-ci.org/Jeff-Lewis/cls-hooked.svg?branch=master)](https://travis-ci.org/Jeff-Lewis/cls-hooked)
+<!-- [![Build Status](https://travis-ci.org/Jeff-Lewis/cls-hooked.svg?branch=master)](https://travis-ci.org/Jeff-Lewis/cls-hooked) -->
 
 # ace-context
 
-`ace-context` provides context across asynchronous execution chains. It is analogous to the thread-local-storage in a threaded environment in that it provides storage for each "thread" of execution.
+Asynchronous Chains of Execution or Asynchronously Chained Execution refer to
+the chaining together of a single execution context across asynchronous
+function calls and event. Of course it works across synchronous calls as well,
+but nothing special is required to maintain context across synchronous calls.
 
-This is derived from [cls-hooked](https://github.com/jeff-lewis/cls-hooked) which is a fork of [CLS](https://github.com/othiym23/node-continuation-local-storage). cls-hooked uses [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) OR, for node prior to v8.1.1, [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) instead of [async-listener](https://github.com/othiym23/async-listener) which CLS uses.
+`ace-context` provides context across asynchronous execution chains. It is
+analogous to the thread-local-storage in a threaded environment in that it
+provides storage for each "thread" of execution.
+
+This is derived from [cls-hooked](https://github.com/jeff-lewis/cls-hooked)
+which is a fork of [CLS](https://github.com/othiym23/node-continuation-local-storage).
+`cls-hooked` uses [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md)
+OR, for node prior to v8.1.1, [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md)
+instead of [async-listener](https://github.com/othiym23/async-listener) which
+`continuation-local-storage` uses.
 
 ### Warnings
 
 When running Nodejs version < 8.2.1, this module uses [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md) which is an unsupported Nodejs API, so please consider the risk before using it.
 
-When running Nodejs version >= 8.2.1, this module uses the newer [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) API which is considered `Experimental` by Nodejs.
+When running Nodejs version >= 8.2.1, this module uses the newer
+[async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md)
+API which is considered `Experimental` by Nodejs. This has been supported by node
+versions 8 through 13 and is the more reliable of the two approaches.
 
 ### Shout out
 
-Thanks to [@trevnorris](https://github.com/trevnorris) for [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md), [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) and all the async work in Node and [@AndreasMadsen](https://github.com/AndreasMadsen) for [async-hook](https://github.com/AndreasMadsen/async-hook)
+Thanks to [@trevnorris](https://github.com/trevnorris) for
+[AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md),
+[async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) and all
+the async work in Node, and [@AndreasMadsen](https://github.com/AndreasMadsen) for
+[async-hook](https://github.com/AndreasMadsen/async-hook).
 
-### A little history of "AsyncWrap/async_hooks" and its incarnations
+### A little history of "AsyncWrap/async_hooks" and its predecessors
 
-1. The first implementation was called **[AsyncListener](https://github.com/nodejs/node-v0.x-archive/pull/6011)** in node v0.11 but was [removed from core](https://github.com/nodejs/node-v0.x-archive/pull/8110) prior to Nodejs v0.12
-2. The second implementation was called **[AsyncWrap, async-wrap or async_wrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md)** and was included with Nodejs v0.12.
-    - `AsyncWrap` is unofficial and undocumented but is currently in Nodejs versions 6 & 7
+1. The first implementation was implemented in node v0.11 and was called
+**[AsyncListener](https://github.com/nodejs/node-v0.x-archive/pull/6011)**. It was
+[removed from core](https://github.com/nodejs/node-v0.x-archive/pull/8110) prior to Nodejs v0.12.
+2. The second implementation was called **[AsyncWrap, async-wrap or async_wrap][async_wrap]** and was included with Nodejs v0.12.
+    - `AsyncWrap` is internal, undocumented, an unoffical but is still in Nodejs version 13
     - `ace-context` uses `AsyncWrap` when run in Node < 8.2.1
-3. The third implementation and [offically Node-eps accepted](https://github.com/nodejs/node-eps/blob/master/006-asynchooks-api.md) is called **AsyncHooks ([async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md)) API** and was included in Nodejs v8. :);
-
-
-`ace-context` uses the [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md) API when run with Node >= 8.2.1
+3. The third implementation is called **AsyncHooks ([async_hooks][])**
+and was introduced in Nodejs version 8.
+    - `AsyncHooks` is [offically Node-eps accepted](https://github.com/nodejs/node-eps/blob/master/006-asynchooks-api.md)
+    - `ace-context` uses the `AsyncHooks` when run with Node >= 8.2.1
 
 ### A Quick Introduction to Asynchronously Chained Execution Context
 
@@ -36,10 +57,10 @@ in threaded programming but it based on chains of callbacks and promise-resoluti
 of threads.
 
 The original module that this is derived from was named `continuation-local-storage`
-because it is similar to ["continuation passing style"][cps] in functional programming. The
-name `ace-context` encapsulates refers the target need that this module addresses - it
-provides a way to set and get values that are scoped to the lifetime of the chain of
-asynchronous functions being executed.
+because it is similar to ["continuation passing style"][cps] in functional programming.
+The name `ace-context` refers to the target need that this module addresses - it
+provides context scoped to the lifetime of the chain of asynchronous functions being
+executed.
 
 #### An example
 
@@ -87,18 +108,18 @@ When you set values in ace-context, those values are accessible until all
 functions called from the original function – synchronously or asynchronously –
 have finished executing. This includes callbacks passed to `process.nextTick`,
 the [timer functions][] ([setImmediate][], [setTimeout][], and [setInterval][]),
-as well as callbacks passed to asynchronous functions such as those exported from
+callbacks passed to asynchronous functions such as those exported from
 the `fs`, `dns`, `zlib` and `crypto` modules, as well as native Promises.
 
-A simple rule of thumb is anywhere where you set a property on the `request`
-or `response` objects in an HTTP handler in order to maintain context, you
-can, and probably should, now use ace-context. This API is designed to allow
-you to maintain context of your choosing across a sequence of function calls,
-with values specific to each sequence of calls.
+A simple rule of thumb is that anywhere where you set a property on the
+`request` or `response` objects in an HTTP handler in order to maintain
+context, you can, and probably should, use ace-context. This API is designed
+to allow you to maintain context of your choosing across a sequence of function
+calls, with values specific to each sequence of calls.
 
 Contexts are grouped into namespaces, created with `createNamespace()`. Each
 namespace can hold multiple contexts each representing an asynchronous chain
-of execution (ace). An ace context is created by calling `.run()` on a namespace
+of execution (ace). An ace-context is created by calling `.run()` on a namespace
 object. Calls to `.run()` can be nested and each nested context holds its own
 copy of any values set by the parent context. This allows each child call to
 get and set its own values without overwriting the parent's.
@@ -111,7 +132,7 @@ var createNamespace = require('ace-context').createNamespace;
 
 var example = createNamespace('example');
 
-// this creates an ace context
+// this creates an ace-context
 example.run(function () {
   example.set('value', 0);
 
@@ -201,7 +222,7 @@ for the existence of `process.namespaces`.
 A namespace is container for an application's ace-contexts. Each ace-context holds
 values specific to a single chain of execution. Each ace-context is originated by a
 call to one of the ace-context originators: `namespace.run()`, `namespace.runAndReturn()`,
-or `namespace.bind()`.
+`namespace.runPromise()`, or `namespace.bind()`.
 
 ### namespace.active
 
@@ -228,8 +249,8 @@ ace-context originator.
 
 * return: the context associated with that callback
 
-Create a new ace-context on which values can be set or read (or descend from an
-existing context). Run the callback and all the functions that are called either
+Create a new ace-context (or descend from an existing context) on which values
+can be set or read. Run the callback and all the functions that are called either
 directly or indirectly through asynchronous functions and promises within that
 ace-context. The context is passed as an argument to the callback.
 
@@ -239,6 +260,14 @@ ace-context. The context is passed as an argument to the callback.
 
 Same as `namespace.run()` but returns the return value of the callback rather
 than the context.
+
+### namespace.runPromise(callback [, contextOptions])
+
+* return: the promise returned by the callback
+
+Same as `namespace.run()` but returns the promise returned by callback *after*
+exiting the ace-context when the promise is resolved or rejected. It propagates
+either the promise's resolved value or throws the error.
 
 ### namespace.bind(callback, [context])
 
@@ -263,7 +292,10 @@ http.createServer(function (req, res) {
   writer.bindEmitter(req);
   writer.bindEmitter(res);
 
-  // do other stuff, some of which is asynchronous
+  req.on('error', function errorHandler () {...});
+
+  // do other stuff. when errorHandler() is invoked the context will be the
+  // context when writer.bindEmitter(req) was called.
 });
 ```
 
@@ -291,9 +323,10 @@ setInterval(function () {
 
 ### contextOptions
 
-`contextOptions.newContext` is a boolean. If truthy a new, empty ace-context
-is created. The context will not descend from any currently active context.
-This is useful when ignoring any existing context is required.
+`contextOptions` are a plain object. `contextOptions.newContext` is a boolean.
+If truthy a new, empty ace-context is created. The context will not inherit
+from any currently active context. This is useful when you want to ignore any
+existing context and start a new asynchronous chain of execution.
 
 ## context
 
@@ -313,3 +346,5 @@ with considerable help from Timothy Caswell,
 [setTimeout]:      https://nodejs.org/api/timers.html#timers_settimeout_callback_delay_arg
 [setInterval]:     https://nodejs.org/api/timers.html#timers_setinterval_callback_delay_arg
 [cps]:             http://en.wikipedia.org/wiki/Continuation-passing_style
+[async_wrap]:       http://blog.trevnorris.com/2015/02/asyncwrap-tutorial-introduction.html
+[async_hooks]:     https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md
