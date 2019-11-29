@@ -1,6 +1,6 @@
 {
-  "name": "hooks-context",
-  "version": "5.0.0",
+  "name": "ace-context",
+  "version": "1.0.0",
   "description": "CLS-like context using async_hooks for node >= 8.0.0",
   "main": "index.js",
   "files": [
