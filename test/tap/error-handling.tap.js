@@ -2,27 +2,30 @@
 
 const test = require('tap').test;
 const cls = require('../../index.js');
-const domain = require('domain');
+
+// node-tap's changelog removed support for domains in version 13 and
+// recommend async-hook-domain. https://node-tap.org/changelog/
+const Domain = require('async-hook-domain');
 
 test("continuation-local storage glue with a throw in the continuation chain",
      function (t) {
   var namespace = cls.createNamespace('test');
   namespace.run(function () {
-    var d = domain.create();
+    const d = new Domain(errorHandler); // eslint-disable-line no-unused-vars
     namespace.set('outer', true);
 
-    d.on('error', function (blerg) {
-      t.equal(blerg.message, "explicitly nonlocal exit", "got the expected exception");
+    function errorHandler (err, type) { // eslint-disable-line no-unused-vars
+      t.equal(err.message, "explicitly nonlocal exit", "got the expected exception");
       t.ok(namespace.get('outer'), "outer context is still active");
       t.notOk(namespace.get('inner'), "inner context should have been exited by throw");
       t.equal(namespace._set.length, 1, "should be back to outer state");
 
       cls.destroyNamespace('test');
       t.end();
-    });
+    };
 
     // tap is only trying to help
-    process.nextTick(d.bind(function () {
+    process.nextTick(function () {
       t.ok(namespace.get('outer'), "outer mutation worked");
       t.notOk(namespace.get('inner'), "inner mutation hasn't happened yet");
 
@@ -30,7 +33,7 @@ test("continuation-local storage glue with a throw in the continuation chain",
         namespace.set('inner', true);
         throw new Error("explicitly nonlocal exit");
       });
-    }));
+    });
   });
 });
 
@@ -86,25 +89,25 @@ test("throw in process.nextTick attaches the context", function (t) {
 
   var namespace = cls.createNamespace('cls@nexttick2');
 
-  var d = domain.create();
-  d.once('error', function (e) {
+  const d = new Domain(errorHandler); // eslint-disable-line no-unused-vars
+  function errorHandler (e) {
     t.ok(namespace.fromException(e), "context was attached to error");
     t.equal(namespace.fromException(e)['value'], 'transaction set',
             "found the inner value");
 
     cls.destroyNamespace('cls@nexttick2');
-  });
+  }
 
   namespace.run(function () {
     namespace.set('value', 'transaction clear');
 
     // tap is only trying to help
-    process.nextTick(d.bind(function () {
+    process.nextTick(function () {
       namespace.run(function () {
         namespace.set('value', 'transaction set');
         throw new Error("cls@nexttick2 explosion");
       });
-    }));
+    });
 
     t.equal(namespace.get('value'), 'transaction clear', "everything was reset");
   });
@@ -114,26 +117,26 @@ test("throw in setTimeout attaches the context", function (t) {
   t.plan(3);
 
   var namespace = cls.createNamespace('cls@nexttick3');
-  var d = domain.create();
+  const d = new Domain(errorHandler); // eslint-disable-line no-unused-vars
 
-  d.once('error', function (e) {
+  function errorHandler (e) {
     t.ok(namespace.fromException(e), "context was attached to error");
     t.equal(namespace.fromException(e)['value'], 'transaction set',
             "found the inner value");
 
     cls.destroyNamespace('cls@nexttick3');
-  });
+  }
 
   namespace.run(function () {
     namespace.set('value', 'transaction clear');
 
     // tap is only trying to help
-    setTimeout(d.bind(function () {
+    setTimeout(function () {
       namespace.run(function () {
         namespace.set('value', 'transaction set');
         throw new Error("cls@nexttick3 explosion");
       });
-    }));
+    });
 
     t.equal(namespace.get('value'), 'transaction clear', "everything was reset");
   });
