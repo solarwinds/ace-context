@@ -70,10 +70,11 @@ function Namespace(name, options = {}) {
   //
   // options.debug - true or an object with additional settings
   //
-
   this.debug = !!options.debug;
+
+  // don't modify the argument object.
   if (typeof options.debug !== 'object') {
-    options.debug = {};
+    options = Object.assign({}, options, {debug: {}});
   }
   this.prefix = options.debug.prefix || '<cls>';
   this.dbgShowActive = options.debug.showActive;
