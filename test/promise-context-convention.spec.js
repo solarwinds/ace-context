@@ -1,8 +1,7 @@
 'use strict';
 
-require('mocha');
 const chai = require('chai');
-const should = chai.should();
+const expect = chai.expect;
 
 const context = require('../index.js');
 
@@ -38,7 +37,7 @@ describe('Promise context convention', () => {
   });
 
   it('convention should be 3', () => {
-    should.equal(conventionId, 3);
+    expect(conventionId).equal(3);
   });
 
 });

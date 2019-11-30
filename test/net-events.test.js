@@ -1,8 +1,6 @@
 'use strict';
 
-require('mocha');
-const chai = require('chai');
-const should = chai.should();
+const expect = require('chai').expect;
 const net = require('net');
 const cls = require('../index.js');
 
@@ -73,23 +71,19 @@ describe('cls with net connection', () => {
   });
 
   it('value newContextValue', () => {
-    should.exist(testValue1);
-    testValue1.should.equal('newContextValue');
+    expect(testValue1).equal('newContextValue');
   });
 
   it('value newContextValue 2', () => {
-    should.exist(testValue2);
-    testValue2.should.equal('newContextValue');
+    expect(testValue2).equal('newContextValue');
   });
 
   it('value MONKEY', () => {
-    should.exist(testValue3);
-    testValue3.should.equal('MONKEY');
+    expect(testValue3).equal('MONKEY');
   });
 
   it('value MONKEY 2', () => {
-    should.exist(testValue4);
-    testValue4.should.equal('MONKEY');
+    expect(testValue4).equal('MONKEY');
   });
 
 });

@@ -1,18 +1,16 @@
 'use strict';
 
 const chai = require('chai');
-const should = chai.should();
+const expect = chai.expect;
 
 const context = require('../index.js');
-
 chai.config.includeStack = true;
+
 
 describe('cls namespace management', () => {
 
   it('name is required', () => {
-    should.Throw(() => {
-      context.createNamespace();
-    });
+    expect(() => context.createNamespace()).throws;
   });
 
   let namespaceTest;
@@ -21,37 +19,34 @@ describe('cls namespace management', () => {
   });
 
   it('namespace is returned upon creation', () => {
-    should.exist(namespaceTest);
+    expect(namespaceTest).exist;
   });
 
   it('namespace lookup works', () => {
-    should.exist(context.getNamespace('test'));
-    context.getNamespace('test').should.be.equal(namespaceTest);
+    const ns = context.getNamespace('test');
+    expect(ns).equal(namespaceTest);
   });
 
   it('allows resetting namespaces', () => {
-    should.not.Throw(() => {
-      context.reset();
-    });
+    expect(() => context.reset()).not.throw();
   });
 
   it('namespaces have been reset', () => {
-    Object.keys(process.namespaces).length.should.equal(0);
+    const n = Object.keys(process.namespaces).length;
+    expect(n).equal(0, `process.namespaces.length is ${n}, not 0`);
   });
 
   it('namespace is available from global', () => {
     context.createNamespace('another');
-    should.exist(process.namespaces.another);
+    expect(process.namespaces.another).exist;
   });
 
   it('destroying works', () => {
-    should.not.Throw(() => {
-      context.destroyNamespace('another');
-    });
+    expect(() => context.destroyNamespace('another')).not.throw();
   });
 
   it('namespace has been removed', () => {
-    should.not.exist(process.namespaces.another);
+    expect(process.namespaces.another).not.exist;
   });
 
 });

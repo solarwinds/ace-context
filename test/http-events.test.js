@@ -6,9 +6,10 @@ var TEST_VALUE = 0x1337;
 var PORT = 55667;
 
 var chai = require('chai');
+const expect = chai.expect;
+
 var sinon = require('sinon');
 var sinonChai = require('sinon-chai');
-chai.should();
 chai.use(sinonChai);
 
 describe('cls with http connections', function () {
@@ -69,34 +70,34 @@ describe('cls with http connections', function () {
       });
 
 
-    })
+    });
 
     it('server request event should be called', () => {
-      requestSpy.called.should.be.true;
+      expect(requestSpy.called).true;
     });
 
     it('server request event should receive data', () => {
-      requestSpy.should.have.been.calledWith(TEST_VALUE);
+      expect(requestSpy).calledWith(TEST_VALUE);
     });
 
     it('server request data event should be called', () => {
-      requestDataSpy.called.should.be.true;
+      expect(requestDataSpy.called).true;
     });
 
     it('server request data event should receive data', () => {
-      requestDataSpy.should.have.been.calledWith(DATUM1, TEST_VALUE);
+      expect(requestDataSpy).calledWith(DATUM1, TEST_VALUE);
     });
 
     it('client data event should be called', () => {
-      responseSpy.called.should.be.true;
+      expect(responseSpy.called).true;
     });
 
     it('client data event should receive data', () => {
-      responseDataSpy.should.have.been.calledWith(DATUM2, 'MONKEY');
+      expect(responseDataSpy).calledWith(DATUM2, 'MONKEY');
     });
 
     it('final context value should be ' + TEST_VALUE, () => {
-      finalContextValue.should.be.equal(TEST_VALUE);
+      expect(finalContextValue).equal(TEST_VALUE);
     });
 
   });

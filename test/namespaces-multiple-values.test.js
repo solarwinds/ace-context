@@ -1,9 +1,7 @@
 'use strict';
 
-require('mocha');
-const chai = require('chai');
-const util = require('util');
-chai.should();
+const expect = require('chai').expect;
+//const util = require('util');
 
 const cls = require('../index.js');
 
@@ -59,19 +57,19 @@ describe('multiple namespaces handles them correctly', () => {
   });
 
   it('name tom1', () => {
-    test1Val.should.equal('tom1');
+    expect(test1Val).equal('tom1');
   });
 
   it('name paul2', () => {
-    test2Val.should.equal('paul2');
+    expect(test2Val).equal('paul2');
   });
 
   it('name bob', () => {
-    test3Val.should.equal('bob');
+    expect(test3Val).equal('bob');
   });
 
   it('name alice', () => {
-    test4Val.should.equal('alice');
+    expect(test4Val).equal('alice');
   });
 
 });
