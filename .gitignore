@@ -4,3 +4,4 @@ node_modules/
 npm-debug.log
 .vscode
 .nyc_output/
+*.tgz
