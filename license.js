@@ -1,3 +1,4 @@
+// Copyright (c) 2019, SolarWinds, Inc.
 // Copyright (c) 2013-2016, Forrest L Norvell <ogd@aoaioxxysz.net>
 // All rights reserved.
 //
