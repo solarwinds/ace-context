@@ -49,4 +49,8 @@ describe('cls namespace management', () => {
     expect(process.namespaces.another).not.exist;
   });
 
+  it('process.namespaces should have the correct count', () => {
+    expect(Object.keys(process.namespaces).length).equal(0);
+  })
+
 });
