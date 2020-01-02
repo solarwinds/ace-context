@@ -13,8 +13,8 @@ but nothing special is required to maintain context across synchronous calls.
 analogous to the thread-local-storage in a threaded environment in that it
 provides storage for each "thread" of execution.
 
-This is derived from [cls-hooked](https://github.com/jeff-lewis/cls-hooked)
-which is a fork of [CLS](https://github.com/othiym23/node-continuation-local-storage).
+This is derived from Jeff Lewis' [cls-hooked](https://github.com/jeff-lewis/cls-hooked)
+which is a fork of [continuation-local-storage](https://github.com/othiym23/node-continuation-local-storage).
 `cls-hooked` uses [async_hooks](https://github.com/nodejs/node/blob/master/doc/api/async_hooks.md)
 OR, for node prior to v8.1.1, [AsyncWrap](https://github.com/nodejs/node-eps/blob/async-wrap-ep/XXX-asyncwrap-api.md)
 instead of [async-listener](https://github.com/othiym23/async-listener) which
