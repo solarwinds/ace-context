@@ -45,7 +45,7 @@
     "chai": "^4.1.0",
     "sinon": "^2.3.8",
     "sinon-chai": "^2.12.0",
-    "superagent": "^3.5.2",
+    "superagent": "^5.0.2",
     "tap": "^14.10.2",
     "tap-mocha-reporter": "^5.0.0"
   },
