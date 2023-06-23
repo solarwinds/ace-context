@@ -38,7 +38,7 @@
   "dependencies": {
     "async-hook-jl": "^1.7.6",
     "emitter-listener": "^1.0.1",
-    "semver": "^5.4.1"
+    "semver": "^7.5.2"
   },
   "devDependencies": {
     "async-hook-domain": "^1.1.3",
